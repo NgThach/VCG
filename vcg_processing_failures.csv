@@ -1,0 +1,3 @@
+record_id,patient_id,label,error
+patient007/s0029lre,patient007,MI,"ValueError: Loop không hợp lệ: (2, 3)"
+patient010/s0042lre,patient010,MI,"ValueError: Loop không hợp lệ: (2, 3)"
