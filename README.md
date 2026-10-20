@@ -12,6 +12,13 @@ vẫn giữ nguyên.
 
 ## 1. Cài đặt
 
+Clone repo và chuyển vào thư mục dự án:
+
+```bash
+git clone https://github.com/NgThach/VCG.git
+cd VCG
+```
+
 Dùng **Python 3.11 trở lên**. Các phiên bản trong `requirements.txt` là phiên bản
 của môi trường đã dùng cho dự án.
 
