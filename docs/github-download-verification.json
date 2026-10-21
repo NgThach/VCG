@@ -1,0 +1,40 @@
+{
+  "date": "2026-10-21",
+  "source_commit": "22a8165c5b2fde54d08c449a6bb4c793915fe015",
+  "origin": "https://github.com/NgThach/VCG.git",
+  "dataset_download": "anonymous HTTPS from public GitHub release data-v1; no local archive copied",
+  "dataset_sha256_verified": true,
+  "expected_files": 1651,
+  "missing_files": [],
+  "corrupt_files": [],
+  "outputs_before_notebook08": false,
+  "standalone_notebook08": {
+    "result": "passed",
+    "prerequisites_generated_automatically": [
+      6,
+      7
+    ],
+    "code_cells": 29,
+    "executed_code_cells": 29,
+    "execution_errors": 0,
+    "embedded_png_outputs": 135,
+    "seconds": 376.21,
+    "v1_artifacts": 896,
+    "review_ids": 448,
+    "t_loop_contact_pages": 75
+  },
+  "notebook09": {
+    "executed_code_cells": 19,
+    "code_cells": 19,
+    "execution_errors": 0,
+    "embedded_png_outputs": 11,
+    "seconds": 9.5
+  },
+  "unit_tests": {
+    "run": 178,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "seconds": 33.677
+  }
+}

@@ -3,7 +3,8 @@
 ## Môi trường và dữ liệu
 
 - Clone riêng tại `/private/tmp/vcg-clean-check`, tách khỏi workspace nghiên cứu.
-- Python 3.11.15, venv mới, không bật system-site-packages.
+- Python 3.11.15, venv mới, không bật system-site-packages; macOS ARM64.
+- Node.js 25.6.1 có sẵn để chạy các test JavaScript (thiếu Node thì các test đó được skip).
 - Cài trực tiếp `requirements.txt` thành công; `pip check`: không có dependency lỗi.
 - Ban đầu chỉ có source và gói PTB đã kiểm checksum; không chép median, features,
   checkpoint, hình hoặc gallery cũ sang clone.
@@ -45,6 +46,16 @@ tại commit `f8b5b8a`; các cập nhật sau đó sửa hướng dẫn kernel v
   chuỗi giả `original` sang JSON notebook hợp lệ để kiểm đúng chính sách hash mới.
 
 ## Cách tự lặp lại
+
+Đã kiểm tra thêm một clone **trực tiếp từ GitHub**, commit `22a8165`, tại
+`/private/tmp/vcg-github-check`: tải 41 phần qua HTTPS công khai bằng
+`python project_setup.py --verify`, tự ghép gói, giải nén và xác nhận SHA-256
+của đủ **1.651 file**, thiếu 0, hỏng 0. Lượt này không chép gói dataset từ máy gốc.
+Sau khi tải, chạy riêng Notebook08 khi chưa có `outputs/`: tự tạo đầu vào của
+06–07, tính V2 và chạy hết **29/29 cell**, 0 lỗi, 135 output PNG, 75 trang T loops
+bao phủ 448 ID. Thời gian 376 giây trên máy kiểm tra. Notebook09 tiếp tục chạy hết 19/19 cell,
+0 lỗi, 11 output PNG trên cùng dữ liệu tải từ GitHub.
+Chi tiết: [`github-download-verification.json`](github-download-verification.json).
 
 ```bash
 python project_setup.py --verify
