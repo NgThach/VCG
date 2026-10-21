@@ -50,3 +50,29 @@ Không còn tham chiếu mã chạy tới 11 file đã xoá; các file nguồn y
 
 Đợt dọn này không chạy lại bộ tests hoặc notebook. Kết quả thực thi trong
 `VERIFICATION.md` thuộc lượt kiểm tra trước khi dọn.
+
+## Dọn các đầu ra không còn được đọc — 21/10/2026
+
+Đã xoá 2.530 file, tổng cộng 604.600.436 byte (khoảng 605 MB) tại workspace:
+
+- Hai bảng overview do Notebook01 xuất ở root: `ptb_records_overview.csv` và
+  `ptb_patients_overview.csv`.
+- Các kết quả xuất độc lập: `output/`, `vcg_preprocessing_results/`,
+  `vcg_window_validation/`, `vcg_v4_results/` và các bản sao cũ trong `backups/`.
+- Các lần chạy cũ/thử: `outputs/vcg_full_evaluation_runs/`,
+  `outputs/vcg_full_evaluation_smoke/` và `outputs/vcg_t_almeida_v2_experiment/smoke/`.
+- Runtime Jupyter tạm, ảnh kiểm tra trong `gallery/qa/`, ảnh xuất riêng trong
+  `figures/walkthrough/`, các bản notebook tự sao lưu, file cập nhật và ảnh preview
+  cũ trong `outputs/vcg_t_almeida_v2_experiment/notebook08_extension/`.
+
+Các file này không được notebook/module hiện tại đọc làm đầu vào và không nằm trong
+danh sách checksum được bảo vệ. Chúng đã bị Git bỏ qua từ trước; không có dataset
+hay bảng feature nào bị gỡ khỏi GitHub. Notebook có thể xuất lại các bảng/hình khi chạy.
+
+Giữ nguyên `data/features/`, dữ liệu PTB, median/artifacts, các CSV đầu vào, kết quả
+V1 đã đóng băng, gallery chính và `notebook08_extension/all_record_t_loops/` đang được
+Notebook08 hiển thị. Ba CSV legacy ở root cũng còn được dùng để tái lập split và
+kiểm tra nguồn, nên vẫn cần giữ.
+
+Đã đối chiếu SHA-256 trước/sau: 9.406 file nguồn, feature và kết quả còn được dùng
+không thay đổi. Lượt dọn này không chạy lại notebook hoặc bộ tests.
