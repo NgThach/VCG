@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+from concurrent.futures import ThreadPoolExecutor
 import hashlib
 import json
 import os
@@ -64,6 +65,36 @@ def download(url, destination, expected):
     partial.replace(destination)
 
 
+def download_bundle(resource, cache, archive):
+    """Small release assets avoid a single very large HTTP upload/download."""
+    def get_part(part):
+        path = cache / part['filename']
+        if not path.exists() or path.stat().st_size != part['bytes'] or digest(path) != part['sha256']:
+            for attempt in range(3):
+                try:
+                    download(part['url'], path, part)
+                    break
+                except (OSError, ValueError) as error:
+                    if attempt == 2:
+                        raise
+                    print(f"Thử lại {part['filename']}: {error}", flush=True)
+                    time.sleep(1)
+        return path
+
+    with ThreadPoolExecutor(max_workers=4) as pool:
+        pieces = list(pool.map(get_part, resource['parts']))
+    temporary = archive.with_suffix(archive.suffix + '.joining')
+    with temporary.open('wb') as target:
+        for path in pieces:
+            with path.open('rb') as source:
+                shutil.copyfileobj(source, target)
+    if temporary.stat().st_size != resource['bytes'] or digest(temporary) != resource['sha256']:
+        raise ValueError('Các phần ghép lại không khớp SHA-256 của dataset')
+    temporary.replace(archive)
+    for path in pieces:
+        path.unlink()
+
+
 def ensure_dataset():
     state = check_dataset()
     if state['corrupt']:
@@ -76,7 +107,7 @@ def ensure_dataset():
     cache.mkdir(parents=True, exist_ok=True)
     archive = cache / resource['filename']
     if not archive.exists() or archive.stat().st_size != resource['bytes'] or digest(archive) != resource['sha256']:
-        download(resource['url'], archive, resource)
+        download_bundle(resource, cache, archive)
     manifest = json.loads((ROOT / 'data/ptbdb-files.json').read_text())
     DATA_ROOT.mkdir(parents=True, exist_ok=True)
     # Explicit members only: reject links, traversal, duplicates and unlisted files.

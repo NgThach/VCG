@@ -31,7 +31,7 @@ Windows: kích hoạt bằng `.venv\Scripts\activate`. Trong Jupyter chọn kern
 python project_setup.py --verify
 ```
 
-Lệnh tải gói **1,35 GB**, kiểm SHA-256 của gói và từng file sau giải nén,
+Lệnh tải 41 phần nhỏ, tự ghép thành gói **1,35 GB**, kiểm SHA-256 của gói và từng file sau giải nén,
 đặt đúng vị trí `content/ptbdb/physionet.org/files/ptbdb/1.0.0/`.
 Có **549 `.hea` + 549 `.dat` + 549 `.xyz`**, `RECORDS`, `README`, `CONTROLS`
 và `SHA256SUMS.txt` từ PhysioNet. Không cần đăng nhập GitHub khi tải release công khai.

@@ -1,0 +1,104 @@
+{
+  "date": "2026-10-21",
+  "source_commit": "f8b5b8a",
+  "environment": "fresh Python 3.11 venv; pip install -r requirements.txt; macOS ARM64",
+  "initial_state": "fresh clone; only verified distribution archive copied; no precomputed outputs",
+  "notebooks": [
+    {
+      "notebook": "01_PTB_dataset_overview.ipynb",
+      "python": "Python 3.11.15 in isolated venv",
+      "code_cells": 20,
+      "executed_code_cells": 20,
+      "execution_errors": 0,
+      "embedded_png_outputs": 8,
+      "seconds": 25.46
+    },
+    {
+      "notebook": "02_VCG_MI_HC_pipeline.ipynb",
+      "python": "Python 3.11.15 in isolated venv",
+      "code_cells": 21,
+      "executed_code_cells": 21,
+      "execution_errors": 0,
+      "embedded_png_outputs": 29,
+      "seconds": 33.64
+    },
+    {
+      "notebook": "03_QRS_T_Loop_Delineation_Experiment.ipynb",
+      "python": "Python 3.11.15 in isolated venv",
+      "code_cells": 9,
+      "executed_code_cells": 9,
+      "execution_errors": 0,
+      "embedded_png_outputs": 4,
+      "seconds": 2.74
+    },
+    {
+      "notebook": "04_VCG_Only_QRS_T_Delineation.ipynb",
+      "python": "Python 3.11.15 in isolated venv",
+      "code_cells": 12,
+      "executed_code_cells": 12,
+      "execution_errors": 0,
+      "embedded_png_outputs": 9,
+      "seconds": 3.24
+    },
+    {
+      "notebook": "05_QRS_T_Loops_Step_by_Step.ipynb",
+      "python": "Python 3.11.15 in isolated venv",
+      "code_cells": 39,
+      "executed_code_cells": 39,
+      "execution_errors": 0,
+      "embedded_png_outputs": 37,
+      "seconds": 17.09
+    },
+    {
+      "notebook": "06_PTB_VCG_12_Features_Train_Valid_Test.ipynb",
+      "python": "Python 3.11.15 in isolated venv",
+      "code_cells": 11,
+      "executed_code_cells": 11,
+      "execution_errors": 0,
+      "embedded_png_outputs": 0,
+      "seconds": 55.88
+    },
+    {
+      "notebook": "07_VCG_QC_vs_Delineation_Audit.ipynb",
+      "python": "Python 3.11.15 in isolated venv",
+      "code_cells": 19,
+      "executed_code_cells": 19,
+      "execution_errors": 0,
+      "embedded_png_outputs": 10,
+      "seconds": 57.22
+    },
+    {
+      "notebook": "08_QRS_T_Loop_Reference_Error_Analysis.ipynb",
+      "python": "Python 3.11.15 in isolated venv",
+      "code_cells": 29,
+      "executed_code_cells": 29,
+      "execution_errors": 0,
+      "embedded_png_outputs": 135,
+      "seconds": 273.89
+    },
+    {
+      "notebook": "09_VCG_T_Loop_Almeida_Wavelet_TLS_Experiment.ipynb",
+      "python": "Python 3.11.15 in isolated venv",
+      "code_cells": 19,
+      "executed_code_cells": 19,
+      "execution_errors": 0,
+      "embedded_png_outputs": 11,
+      "seconds": 8.86
+    }
+  ],
+  "code_cells_total": 179,
+  "execution_errors": 0,
+  "unit_tests": {
+    "run": 178,
+    "failures": 0,
+    "errors": 0
+  },
+  "v1_feature_parity": {
+    "rows": 448,
+    "features": 12,
+    "rtol": 1e-10,
+    "atol": 1e-12,
+    "nan_equal": true,
+    "split_equal": true
+  }
+}

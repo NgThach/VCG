@@ -20,7 +20,7 @@ và `project_setup.py`. Mỗi notebook gọi bước chuẩn bị ở đầu; c�
 3. **CSV lịch sử trong Git:** `vcg_12_features.csv`, `vcg_processing_qc.csv`,
    `vcg_processing_failures.csv`. Notebook02 và phép kiểm tra nguồn còn dùng chúng.
 4. **Dataset ở GitHub Releases:** 1.651 file từ PhysioNet: 549 header, 549 ECG `.dat`, 549 Frank `.xyz`, `RECORDS`, `CONTROLS`,
-   `README`, `SHA256SUMS.txt`. Gói nén 1.349.695.961 byte. `data/resources.json`
+   `README`, `SHA256SUMS.txt`. Gói nén 1.349.695.961 byte, chia thành 41 phần tối đa 32 MiB. `data/resources.json`
    khóa checksum của gói; `data/ptbdb-files.json` khóa checksum/dung lượng từng file.
 
 Không cần phân phối `.DS_Store`, HTML liệt kê file tải từ website, môi trường Conda,

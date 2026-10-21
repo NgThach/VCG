@@ -46,7 +46,9 @@ class ReferenceOrchestrationTests(unittest.TestCase):
                      '05_QRS_T_Loops_Step_by_Step.ipynb',
                      '06_PTB_VCG_12_Features_Train_Valid_Test.ipynb',
                      '07_VCG_QC_vs_Delineation_Audit.ipynb'):
-            (self.root/name).write_text('original')
+            content = json.dumps({'cells': [{'cell_type': 'code', 'source': ['x = 1'],
+                'outputs': [], 'execution_count': None}]}) if name.endswith('.ipynb') else 'original'
+            (self.root/name).write_text(content)
         (input_dir/'train_features.csv').write_text('original CSV')
         (artifacts/'record.npz').write_bytes(b'original cached signal')
         (qc/'manual_review_blinded.csv').write_text('original blank reviews')
@@ -56,6 +58,17 @@ class ReferenceOrchestrationTests(unittest.TestCase):
             self.assertEqual(returned_artifacts,artifacts)
             self.assertTrue(orchestration.verify_protected(hashes,self.root))
             self.assertIn('outputs/vcg_qc_audit_v1/manual_review_blinded.csv',hashes)
+            notebook_path = self.root/'05_QRS_T_Loops_Step_by_Step.ipynb'
+            notebook = json.loads(notebook_path.read_text())
+            notebook['cells'][0]['outputs'] = [{'output_type': 'stream', 'text': 'saved output'}]
+            notebook_path.write_text(json.dumps(notebook))
+            self.assertTrue(orchestration.verify_protected(hashes,self.root))
+            notebook['cells'][0]['source'] = ['x = 2']
+            notebook_path.write_text(json.dumps(notebook))
+            with self.assertRaisesRegex(ValueError,'Protected V1 files changed'):
+                orchestration.verify_protected(hashes,self.root)
+            notebook['cells'][0]['source'] = ['x = 1']
+            notebook_path.write_text(json.dumps(notebook))
             signal = artifacts/'record.npz'
             signal.write_bytes(b'changed signal')
             with self.assertRaisesRegex(ValueError,'Protected V1 files changed'):
