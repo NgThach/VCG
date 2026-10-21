@@ -94,8 +94,7 @@ Xem [cấu trúc dự án và các script đã dọn](docs/PROJECT_STRUCTURE.md)
 - `vcg_t_almeida.py`: phép biến đổi wavelet và hai nhánh tìm T-on/T-off bằng TLS.
 - `scripts/`: chạy toàn bộ dữ liệu, báo cáo, giao diện xem và vẽ hình.
 - `tests/`: các phép kiểm thử đã có; chạy riêng khi cần kiểm tra mã.
-- `METHOD_REPRODUCTION.md`: nguồn công thức, phần điều chỉnh và giới hạn.
-- `PREPROCESSING_UPGRADE.md`: thay đổi tiền xử lý so với phiên bản cũ.
+- `METHOD_REPRODUCTION.md`: tiền xử lý V1, nguồn công thức Wavelet/TLS, các điều chỉnh và giới hạn.
 - Notebook01–05: khảo sát dữ liệu và các bước phát triển trước luồng hiện tại.
 
 ## 5. Giới hạn cần giữ khi diễn giải

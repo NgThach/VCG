@@ -1,4 +1,58 @@
-# Notebook 09 — Truy vết phương pháp Wavelet Transform Loops + TLS
+# Phương pháp xử lý VCG — Tiền xử lý, QRS/T và Wavelet/TLS
+
+## Tiền xử lý V1 trước khi tạo median và tách QRS/T
+
+Notebook04–05 dùng chung `vcg_preprocessing.py`, `vcg_pipeline.py` và
+`vcg_preprocessing_evaluation.py`. Cấu hình thực thi nằm trong lớp `Config`
+và được lưu cùng từng lần chạy. Các thiết lập dưới đây là lựa chọn nghiên cứu
+của dự án; chưa được hiệu chuẩn bằng mốc QRS/T độc lập trên toàn cohort.
+
+### Hai nhánh tín hiệu
+
+- **Nhánh đo hình dạng:** FIR 401 hệ số, cửa sổ Kaiser β=8, cutoff thiết kế
+  175 Hz, lọc hai chiều tại fs=1000 Hz. Cutoff thiết kế không có nghĩa mọi
+  thành phần dưới 175 Hz đều được giữ nguyên. Không có high-pass mặc định.
+- **Nhánh tìm QRS:** Butterworth bậc 3, 5–30 Hz và RMS 80 ms để làm rõ hoạt động
+  QRS. Nhánh này dùng tìm mốc; loop và feature lấy từ nhánh đo hình dạng.
+- **Đặt gốc XYZ:** trừ vector nền PQ trên từng beat, căn nhịp, lấy median rồi
+  trừ PQ của median. Phép trừ vector hằng không ép đoạn ST/T về phẳng.
+- Beat có hình dạng khác thường được giữ khi không có lỗi dữ liệu rõ ràng và
+  có thể mang cờ xem lại. Median theo từng thời điểm vẫn có thể làm yếu đặc điểm
+  chỉ xuất hiện ở ít beat; việc giữ beat không bảo đảm giữ mọi đặc điểm trong median.
+
+### Notch 50 Hz có điều kiện
+
+Notch có ba chế độ `auto/on/off`; chế độ auto quyết định riêng cho từng trục.
+Cấu hình ban đầu dùng Q=50. Welch trên toàn tín hiệu và các cửa sổ 4 giây kiểm tra
+đỉnh quanh 50 Hz, độ tập trung năng lượng, mức tồn tại qua các cửa sổ và thành phần
+sin/cos tại vùng ít hoạt động tim. Các ngưỡng 8 dB, 60% và 55% là heuristic của dự án.
+
+- `noise_detected`: đủ bằng chứng theo các quy tắc đã đặt.
+- `noise_not_detected`: chưa phát hiện bằng chứng đáng kể theo các quy tắc đó.
+- `inconclusive`: thiếu thời lượng/vùng đủ yên hoặc bằng chứng không nhất quán;
+  auto giữ trục chưa notch và ghi cảnh báo.
+
+Peak PSD quanh 50 Hz có thể chứa thành phần tim thật; riêng việc peak vượt ngưỡng
+không đủ để auto notch. Notch cũng có thể làm giảm thành phần tim ở gần 50 Hz.
+Chế độ forced `on` là một thí nghiệm, không phải xác nhận có nhiễu.
+
+### Phạm vi so sánh và kết quả cần đọc
+
+Notebook04–05 lưu các kiểm tra đáp ứng bộ lọc, tín hiệu tổng hợp, ví dụ PTB thật,
+XYZ, biên, loop và độ thay đổi feature. So sánh `fixed` giữ anchors, tập beat,
+PQ và biên để tách ảnh hưởng của lọc; so sánh `full` chạy lại toàn bộ từng cấu hình.
+PSD giảm hoặc tín hiệu gần bản chưa lọc không tự chứng minh kết quả đúng hơn.
+
+Notebook02–03 và thí nghiệm cửa sổ thời gian có các cấu hình lịch sử riêng,
+trong đó có Savitzky–Golay dài hoặc bộ lọc hỗ trợ fs250/500/1000. Không trộn
+các feature/hình này với V1 FIR như thể cùng một lần chạy. Ba CSV `vcg_*` ở root
+được giữ vì còn dùng đối chiếu lịch sử, tái tạo split và kiểm tra nguồn.
+
+Cơ sở tham khảo cho băng thông và tiền xử lý:
+[Kligfield et al. 2007](https://www.jacc.org/doi/10.1016/j.jacc.2007.01.024),
+[Kijonka et al. 2022](https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2022.941827/full),
+[Representative QRS loop 2023](https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2023.1260074/full).
+Các nguồn này không xác nhận riêng cấu hình FIR/notch của dự án là tối ưu.
 
 ## Mức tái hiện được công bố
 
