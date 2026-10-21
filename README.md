@@ -4,10 +4,26 @@ Dự án xử lý ba kênh Frank **X/Y/Z** của PTB, tạo nhịp đại diện
 tách QRS và T, trích xuất 12 đặc trưng và so sánh cách tìm biên T cũ (V1) với
 Wavelet/TLS (V2). Phạm vi MI/HC hiện có **448 bản ghi / 200 bệnh nhân**.
 
-Repo chứa mã nguồn, 9 notebook, kiểm thử và danh sách chia tập theo bệnh nhân.
-**Dataset đầy đủ đã được đính kèm tại [GitHub Release data-v1](https://github.com/NgThach/VCG/releases/tag/data-v1).**
-`git clone` tải mã nguồn; lệnh chuẩn bị bên dưới tải dataset và kiểm checksum.
-Các kết quả trung gian được tính lại tại máy chạy, không phụ thuộc cache trên máy tác giả.
+Repo chứa mã nguồn, 9 notebook nghiên cứu, kiểm thử, danh sách chia tập theo bệnh nhân
+và các bảng VCG features đã trích xuất. `git clone` tải cả mã nguồn và bảng features.
+Để chạy lại quá trình trích xuất hoặc vẽ loops, dataset gốc được đính kèm tại
+[GitHub Release data-v1](https://github.com/NgThach/VCG/releases/tag/data-v1);
+lệnh chuẩn bị bên dưới tải dataset, kiểm checksum và tạo lại kết quả trung gian.
+
+## Chỉ dùng VCG features đã trích xuất
+
+Các CSV hiện tại đã nằm trực tiếp trong **[data/features/](data/features/README.md)**.
+Chọn `v1/` hoặc `v2/`; mỗi bộ có train/valid/test với **263/70/115 dòng**.
+Cả sáu CSV chỉ khoảng **309 KB**. Khi chỉ dùng bảng feature, không cần tải PTB,
+chạy `project_setup.py` hay kết nối Drive.
+
+Mở [notebook đọc features trên Colab](https://colab.research.google.com/github/NgThach/VCG/blob/main/examples/Read_VCG_Features.ipynb)
+để lấy trực tiếp `X_train`, `y_train`, `X_valid`, `y_valid`, `X_test`, `y_test`.
+V1 giữ 7 dòng thiếu feature; V2 giữ 136 dòng thiếu. File `vcg_12_features.csv`
+ở root là bảng legacy 446 dòng, không phải bảng V1 hiện tại.
+
+Các bước tải dữ liệu và chạy Notebook01–09 bên dưới dành cho việc trích xuất,
+kiểm tra hoặc trực quan tín hiệu/loops.
 
 ## 1. Clone và cài đặt
 

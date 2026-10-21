@@ -1,5 +1,14 @@
 # Đầu vào để chạy lại toàn bộ notebook
 
+## Nếu chỉ dùng VCG features có sẵn
+
+Đọc trực tiếp `data/features/{v1,v2}/{train,valid,test}_features.csv`, hoặc mở
+[`examples/Read_VCG_Features.ipynb`](../examples/Read_VCG_Features.ipynb).
+Các CSV đã nằm trong Git, mỗi bộ có đủ 448 dòng với split 263/70/115.
+V1 còn 7 dòng thiếu feature, V2 còn 136 dòng; giữ nguyên giá trị thiếu và cờ QC.
+Không cần tải PTB hoặc gọi `project_setup.py` cho luồng này. Hướng dẫn bên dưới
+dành cho việc chạy lại Notebook01–09 để trích xuất/kiểm tra/vẽ tín hiệu.
+
 ## Vì sao bản clone trước bị thiếu dữ liệu?
 
 Git trước đây chỉ có source và các CSV legacy. Thư mục `content/` và `outputs/`
@@ -19,7 +28,9 @@ và `project_setup.py`. Mỗi notebook gọi bước chuẩn bị ở đầu; c�
    theo bệnh nhân. Tên `val` trong manifest V1 được đổi thành `valid` ở bảng features.
 3. **CSV lịch sử trong Git:** `vcg_12_features.csv`, `vcg_processing_qc.csv`,
    `vcg_processing_failures.csv`. Notebook02 và phép kiểm tra nguồn còn dùng chúng.
-4. **Dataset ở GitHub Releases:** 1.651 file từ PhysioNet: 549 header, 549 ECG `.dat`, 549 Frank `.xyz`, `RECORDS`, `CONTROLS`,
+4. **Features hiện tại trong Git:** `data/features/` chứa sáu CSV V1/V2, metadata
+   nguồn/checksum và hướng dẫn đọc; `examples/Read_VCG_Features.ipynb` chỉ cần pandas.
+5. **Dataset ở GitHub Releases:** 1.651 file từ PhysioNet: 549 header, 549 ECG `.dat`, 549 Frank `.xyz`, `RECORDS`, `CONTROLS`,
    `README`, `SHA256SUMS.txt`. Gói nén 1.349.695.961 byte, chia thành 41 phần tối đa 32 MiB. `data/resources.json`
    khóa checksum của gói; `data/ptbdb-files.json` khóa checksum/dung lượng từng file.
 

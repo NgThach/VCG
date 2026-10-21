@@ -3,6 +3,10 @@
 ## Các phần đang dùng
 
 - **Notebook 01–09:** nội dung khảo sát, xử lý và trực quan của dự án.
+- **`data/features/v1/` và `data/features/v2/`:** các bảng VCG features hiện tại,
+  mỗi bộ gồm train/valid/test. Đã có sẵn trong Git, không cần tải tín hiệu PTB.
+- **`examples/Read_VCG_Features.ipynb`:** chỉ đọc các bảng features và tạo X/y;
+  có thể mở riêng trên Colab. Xem `data/features/README.md` để chọn V1/V2.
 - **Bốn module ở root:** `vcg_preprocessing.py`, `vcg_pipeline.py`,
   `vcg_preprocessing_evaluation.py`, `vcg_t_almeida.py`.
 - **Chuẩn bị dữ liệu trong bản GitHub:** `project_setup.py`, `project_integrity.py`,

@@ -1,0 +1,87 @@
+{
+  "description": "Pre-extracted recording-level VCG features; no waveform files required for reading/model training.",
+  "feature_columns": [
+    "QRS_Arc",
+    "QRS_Area",
+    "QRS_MaxVec",
+    "QRS_MaxCentroidDistance",
+    "QRS_MaxVel",
+    "QRS_MeanVel",
+    "QRS_StdVel",
+    "T_MaxVec",
+    "T_Area",
+    "T_MaxVel",
+    "T_MeanVel",
+    "T_StdVel"
+  ],
+  "label_mapping": {
+    "HC": 0,
+    "MI": 1
+  },
+  "recordings": 448,
+  "patients": 200,
+  "missing_values": "Empty CSV cells represent missing values. No rows dropped and no imputation applied.",
+  "qc_note": "Complete features do not imply QC approval or clinical boundary accuracy.",
+  "versions": {
+    "v1": {
+      "method": "Current V1 from Notebook06",
+      "source_sha256": {
+        "outputs/vcg_12_features_train_valid_test/train_features.csv": "52f8f1bd8cb4c4f993d39b646b2568955a6e19501d45a710d611a9f60c52e290",
+        "outputs/vcg_12_features_train_valid_test/valid_features.csv": "5b453f0fceaf56415ef0fc7a863f9b0b6127ca0addb87bd1d768ed07724f25c2",
+        "outputs/vcg_12_features_train_valid_test/test_features.csv": "b910615f80c3034942995894dda77f9f34309c21a9e48513f2203fdc8c52e99c"
+      },
+      "splits": {
+        "train": {
+          "rows": 263,
+          "complete_features": 259,
+          "missing_features": 4,
+          "bytes": 91246,
+          "sha256": "641bbfe2527e8fb946b552b552a349463b3523705b263c40f6d39f7b2fe4d74d"
+        },
+        "valid": {
+          "rows": 70,
+          "complete_features": 67,
+          "missing_features": 3,
+          "bytes": 24515,
+          "sha256": "c4becc594f5a433c24ec95186ce4b20c6ba4ae852327d1404f6269fa9a341bed"
+        },
+        "test": {
+          "rows": 115,
+          "complete_features": 115,
+          "missing_features": 0,
+          "bytes": 39564,
+          "sha256": "49560bc1f5f2f87bc5afb236c5e046bade9a883a1e0f5a6a9d9ebe9348f64c6a"
+        }
+      }
+    },
+    "v2": {
+      "method": "Wavelet/TLS T features; QRS features from V1",
+      "source_sha256": {
+        "outputs/vcg_t_almeida_v2_experiment/v2_t_boundaries.csv": "cbde7c58cb00a8006e7ce94be895c09af120dcdea0a918ba3865abf8d1586fdf"
+      },
+      "splits": {
+        "train": {
+          "rows": 263,
+          "complete_features": 176,
+          "missing_features": 87,
+          "bytes": 89680,
+          "sha256": "637da1b991220708b4ec4472a5348cd9e4a267dd0e30ba6dbb87cc668de12300"
+        },
+        "valid": {
+          "rows": 70,
+          "complete_features": 46,
+          "missing_features": 24,
+          "bytes": 24035,
+          "sha256": "03df94faeb10af545220710b94cff8b05a9cf8363438728aea85b1f69245a560"
+        },
+        "test": {
+          "rows": 115,
+          "complete_features": 90,
+          "missing_features": 25,
+          "bytes": 39936,
+          "sha256": "c6948355640a76c94199988f73ca3dfc3cde71353a251737041a31e9a8151ced"
+        }
+      }
+    }
+  }
+}
