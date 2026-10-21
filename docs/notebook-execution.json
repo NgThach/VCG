@@ -1,104 +1,301 @@
 {
   "date": "2026-10-21",
-  "source_commit": "f8b5b8a",
-  "environment": "fresh Python 3.11 venv; pip install -r requirements.txt; macOS ARM64",
-  "initial_state": "fresh clone; only verified distribution archive copied; no precomputed outputs",
+  "timezone": "Asia/Ho_Chi_Minh",
+  "source_commit": "3143d89097c717da5012a3ab4bb30a531f858e70",
+  "scope": "GitHub publication source; original workspace Notebook06 audited separately and fails.",
+  "python": "3.11.15",
+  "environment": "Existing clean venv with pinned requirements; fresh kernel per notebook.",
+  "run_directory": "/private/tmp/vcg-notebook-check-v8a5yp74",
+  "dataset": {
+    "expected_files": 1651,
+    "missing": [],
+    "corrupt": [],
+    "verified_sha256": true,
+    "complete": true
+  },
+  "dataset_mode": "Existing verified PTB files linked into a fresh clone; no previous outputs/checkpoints reused.",
   "notebooks": [
     {
       "notebook": "01_PTB_dataset_overview.ipynb",
-      "python": "Python 3.11.15 in isolated venv",
       "code_cells": 20,
       "executed_code_cells": 20,
-      "execution_errors": 0,
-      "embedded_png_outputs": 8,
-      "seconds": 25.46
+      "errors": [],
+      "png_outputs": 8,
+      "seconds": 10.03,
+      "source_sha256": "d8a166fa8a02db0a0f1ff6cb57f90c297877018ae6a2ce621d83efd782ce6234"
     },
     {
       "notebook": "02_VCG_MI_HC_pipeline.ipynb",
-      "python": "Python 3.11.15 in isolated venv",
       "code_cells": 21,
       "executed_code_cells": 21,
-      "execution_errors": 0,
-      "embedded_png_outputs": 29,
-      "seconds": 33.64
+      "errors": [],
+      "png_outputs": 29,
+      "seconds": 21.58,
+      "source_sha256": "87fc6e508c2d0de6e82efea40863d96ff39f317f956d67985cf0e8fab71fcf99"
     },
     {
       "notebook": "03_QRS_T_Loop_Delineation_Experiment.ipynb",
-      "python": "Python 3.11.15 in isolated venv",
       "code_cells": 9,
       "executed_code_cells": 9,
-      "execution_errors": 0,
-      "embedded_png_outputs": 4,
-      "seconds": 2.74
+      "errors": [],
+      "png_outputs": 4,
+      "seconds": 3.15,
+      "source_sha256": "d8cd3f3c13ac202159c01df36991f96c16924d12b94b57d95ee59b616f89d2ec"
     },
     {
       "notebook": "04_VCG_Only_QRS_T_Delineation.ipynb",
-      "python": "Python 3.11.15 in isolated venv",
       "code_cells": 12,
       "executed_code_cells": 12,
-      "execution_errors": 0,
-      "embedded_png_outputs": 9,
-      "seconds": 3.24
+      "errors": [],
+      "png_outputs": 9,
+      "seconds": 3.91,
+      "source_sha256": "a871a7e2bd32e34120a5e9a63c16849a39ff922c6514665fbcdb302cafd532db"
     },
     {
       "notebook": "05_QRS_T_Loops_Step_by_Step.ipynb",
-      "python": "Python 3.11.15 in isolated venv",
       "code_cells": 39,
       "executed_code_cells": 39,
-      "execution_errors": 0,
-      "embedded_png_outputs": 37,
-      "seconds": 17.09
+      "errors": [],
+      "png_outputs": 37,
+      "seconds": 18.51,
+      "source_sha256": "f2614bc607b2f7251794e070e98ec0c2c8cafe2d31ad3fa57fd66d43993fd30c"
     },
     {
       "notebook": "06_PTB_VCG_12_Features_Train_Valid_Test.ipynb",
-      "python": "Python 3.11.15 in isolated venv",
       "code_cells": 11,
       "executed_code_cells": 11,
-      "execution_errors": 0,
-      "embedded_png_outputs": 0,
-      "seconds": 55.88
+      "errors": [],
+      "png_outputs": 0,
+      "seconds": 57.48,
+      "source_sha256": "c798edc6221b444a53ff9b6b396732c64605203b8f7f113297949d15ab9e3e0e"
     },
     {
       "notebook": "07_VCG_QC_vs_Delineation_Audit.ipynb",
-      "python": "Python 3.11.15 in isolated venv",
       "code_cells": 19,
       "executed_code_cells": 19,
-      "execution_errors": 0,
-      "embedded_png_outputs": 10,
-      "seconds": 57.22
+      "errors": [],
+      "png_outputs": 10,
+      "seconds": 54.59,
+      "source_sha256": "1658fbca76df9bc9c8b7222e0fd59889fbc49bbe2c8f628a5eae36464ff674e5"
     },
     {
       "notebook": "08_QRS_T_Loop_Reference_Error_Analysis.ipynb",
-      "python": "Python 3.11.15 in isolated venv",
       "code_cells": 29,
       "executed_code_cells": 29,
-      "execution_errors": 0,
-      "embedded_png_outputs": 135,
-      "seconds": 273.89
+      "errors": [],
+      "png_outputs": 135,
+      "seconds": 272.39,
+      "source_sha256": "e81ba627ef1a1c4d615e3dca6e49d7cf3fa0a66a688a74aad9abc18bb4e242b2"
     },
     {
       "notebook": "09_VCG_T_Loop_Almeida_Wavelet_TLS_Experiment.ipynb",
-      "python": "Python 3.11.15 in isolated venv",
       "code_cells": 19,
       "executed_code_cells": 19,
-      "execution_errors": 0,
-      "embedded_png_outputs": 11,
-      "seconds": 8.86
+      "errors": [],
+      "png_outputs": 11,
+      "seconds": 10.51,
+      "source_sha256": "8ec7a955884c900f8d4477e96a3e82c07d057d566d9323a101f676f03d078362"
     }
   ],
-  "code_cells_total": 179,
-  "execution_errors": 0,
-  "unit_tests": {
-    "run": 178,
-    "failures": 0,
-    "errors": 0
+  "all_published_numbered_notebooks_passed": true,
+  "numbered_code_cells": 179,
+  "total_runner_seconds": 452.15,
+  "feature_notebook": [
+    {
+      "version": "v1",
+      "source_sha256": "741a172811226fe7652812934230ddd39b3008e52cfabd2e2cad891602af9e76",
+      "code_cells": 3,
+      "executed_code_cells": 3,
+      "execution_errors": 0,
+      "shapes": {
+        "train": [
+          263,
+          12
+        ],
+        "valid": [
+          70,
+          12
+        ],
+        "test": [
+          115,
+          12
+        ]
+      },
+      "missing_rows": {
+        "train": 4,
+        "valid": 3,
+        "test": 0
+      },
+      "seconds": 0.98
+    },
+    {
+      "version": "v2",
+      "source_sha256": "741a172811226fe7652812934230ddd39b3008e52cfabd2e2cad891602af9e76",
+      "code_cells": 3,
+      "executed_code_cells": 3,
+      "execution_errors": 0,
+      "shapes": {
+        "train": [
+          263,
+          12
+        ],
+        "valid": [
+          70,
+          12
+        ],
+        "test": [
+          115,
+          12
+        ]
+      },
+      "missing_rows": {
+        "train": 87,
+        "valid": 24,
+        "test": 25
+      },
+      "seconds": 0.83
+    }
+  ],
+  "github_feature_downloads": [
+    {
+      "version": "v1",
+      "split": "train",
+      "url": "https://raw.githubusercontent.com/NgThach/VCG/main/data/features/v1/train_features.csv",
+      "status": 200,
+      "bytes": 91246,
+      "sha256": "641bbfe2527e8fb946b552b552a349463b3523705b263c40f6d39f7b2fe4d74d",
+      "matches_metadata": true
+    },
+    {
+      "version": "v1",
+      "split": "valid",
+      "url": "https://raw.githubusercontent.com/NgThach/VCG/main/data/features/v1/valid_features.csv",
+      "status": 200,
+      "bytes": 24515,
+      "sha256": "c4becc594f5a433c24ec95186ce4b20c6ba4ae852327d1404f6269fa9a341bed",
+      "matches_metadata": true
+    },
+    {
+      "version": "v1",
+      "split": "test",
+      "url": "https://raw.githubusercontent.com/NgThach/VCG/main/data/features/v1/test_features.csv",
+      "status": 200,
+      "bytes": 39564,
+      "sha256": "49560bc1f5f2f87bc5afb236c5e046bade9a883a1e0f5a6a9d9ebe9348f64c6a",
+      "matches_metadata": true
+    },
+    {
+      "version": "v2",
+      "split": "train",
+      "url": "https://raw.githubusercontent.com/NgThach/VCG/main/data/features/v2/train_features.csv",
+      "status": 200,
+      "bytes": 89680,
+      "sha256": "637da1b991220708b4ec4472a5348cd9e4a267dd0e30ba6dbb87cc668de12300",
+      "matches_metadata": true
+    },
+    {
+      "version": "v2",
+      "split": "valid",
+      "url": "https://raw.githubusercontent.com/NgThach/VCG/main/data/features/v2/valid_features.csv",
+      "status": 200,
+      "bytes": 24035,
+      "sha256": "03df94faeb10af545220710b94cff8b05a9cf8363438728aea85b1f69245a560",
+      "matches_metadata": true
+    },
+    {
+      "version": "v2",
+      "split": "test",
+      "url": "https://raw.githubusercontent.com/NgThach/VCG/main/data/features/v2/test_features.csv",
+      "status": 200,
+      "bytes": 39936,
+      "sha256": "c6948355640a76c94199988f73ca3dfc3cde71353a251737041a31e9a8151ced",
+      "matches_metadata": true
+    }
+  ],
+  "results": {
+    "v1": {
+      "records": 448,
+      "patients": 200,
+      "medians": 443,
+      "full_12_features": 441,
+      "missing_features": 7,
+      "split_sizes": [
+        263,
+        70,
+        115
+      ],
+      "missing_by_split": [
+        4,
+        3,
+        0
+      ],
+      "distributed_feature_parity_exact": true
+    },
+    "qc": {
+      "scenarios": 7168,
+      "sensitivity_rows": 86016,
+      "baseline_checks": 5376,
+      "baseline_mismatches": 0,
+      "gallery_records": 448
+    },
+    "visualization": {
+      "records": 448,
+      "v1_pages": 38,
+      "v2_comparison_pages": 75,
+      "verified_contact_sheet_pngs": 113,
+      "render_errors": 0,
+      "signal_integrity_issues": 0,
+      "signal_parity_differences": 0,
+      "every_id_exactly_once": true
+    },
+    "v2": {
+      "records": 448,
+      "full_12_features": 312,
+      "missing_features": 136,
+      "exceptions": 0,
+      "artifacts": 448,
+      "diagnostics": 448,
+      "checkpoints": 448,
+      "gallery_payloads": 448,
+      "cohort_pngs": 896,
+      "distributed_feature_parity_exact": true,
+      "protected_v1_changes": 0,
+      "processing_stage": "Freshly computed by Notebook08 prerequisite; reused by Notebook09 default."
+    }
   },
-  "v1_feature_parity": {
-    "rows": 448,
-    "features": 12,
-    "rtol": 1e-10,
-    "atol": 1e-12,
-    "nan_equal": true,
-    "split_equal": true
-  }
+  "mode_limits": {
+    "notebook02": {
+      "attempted": 448,
+      "success": 446,
+      "caught_failures": [
+        "patient007/s0029lre",
+        "patient010/s0042lre"
+      ],
+      "failure_reason": "ValueError: Loop không hợp lệ: (2, 3)",
+      "analysis_seconds": 30
+    },
+    "notebook04": {
+      "run_batch": false,
+      "demo_records": 3
+    },
+    "notebook05": {
+      "ptb_records": 448,
+      "windows_per_record": 9,
+      "ptb_rows": 4032,
+      "synthetic_rows": 810,
+      "record_window_errors": 0
+    }
+  },
+  "original_workspace_notebook06": {
+    "source_sha256": "8f4484058796ac61126fba4c6d4f5bd66c5f95fc35e076dbd77a7e388381ab43",
+    "code_cells_attempted": 3,
+    "passed": 2,
+    "failed": 1,
+    "failing_cell_number": 7,
+    "error": "NameError: name 'importlib' is not defined",
+    "missing_import": "import importlib.metadata",
+    "source_modified": false,
+    "published_version_passed": true
+  },
+  "standalone_test_suite_rerun": false
 }
