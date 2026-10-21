@@ -1,7 +1,6 @@
 # Chạy đánh giá PTB VCG baseline V1
 
-Chạy từ thư mục project bằng Python của kernel `ipcv` (đã có numpy, scipy,
-pandas, matplotlib, scikit-learn, wfdb và tqdm). Không huấn luyện classifier.
+Chạy từ thư mục project bằng môi trường Python đã cài `requirements.txt` (kernel **PTB VCG**). Không huấn luyện classifier.
 File notebook có hậu tố `(2)` không có trong workspace; baseline là notebook 05
 hiện có và các module mà notebook đó import, được sao lưu kèm SHA-256.
 
@@ -49,20 +48,16 @@ Các cờ bắt đầu `eval_` chỉ bổ sung hướng dẫn review, không đ�
 
 ## Chú giải độc lập
 
-Sau batch và trước khi chuyên gia nhập dữ liệu, có thể tạo bộ review không vẽ
-biên dự đoán và bổ sung phụ lục chẩn đoán chi tiết:
+Sau batch, chạy Notebook07 để tạo báo cáo QC và bộ review không vẽ biên dự đoán:
 
 ```sh
-python scripts/prepare_vcg_blind_review.py
-python scripts/compare_vcg_annotations.py --output-dir outputs/vcg_full_evaluation --annotations outputs/vcg_full_evaluation/annotations/manual_review_template.csv
-python scripts/finalize_vcg_evaluation.py
+python scripts/execute_notebook.py 07_VCG_QC_vs_Delineation_Audit.ipynb
 ```
 
-Lệnh comparison trên template pending tạo bảng rỗng và audit, không tạo ground
-truth. Script blind review từ chối ghi đè CSV đã có để bảo vệ chú giải chuyên gia.
-`manual_review_blinded.csv` bỏ dự đoán, QC và nhãn bệnh khỏi lượt đọc đầu.
-Một số ca không có median được ghi `no_median_beat`; cần review tín hiệu gốc và
-detector riêng, không chú giải biên trên median không tồn tại.
+Bộ review được lưu ở `outputs/vcg_qc_audit_v1/manual_review_blinded.csv`,
+với hình trong `outputs/vcg_qc_audit_v1/blinded_review/`. Phần chuẩn bị giữ file
+review đã có. Notebook08 đọc bộ này để mở công cụ chú giải và đánh giá reference.
+Không có median thì cần xem tín hiệu gốc/detector, không tự tạo biên tham chiếu.
 
 PTB cục bộ không có ground truth tương ứng đầy đủ cho bốn biên hoặc mốc nhịp.
 Challenge 2006 dùng cùng record nhưng QT lead II khác endpoint và nhịp đại diện;

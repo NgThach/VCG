@@ -450,11 +450,11 @@ def write_report(results, frame, status, priority, output_dir=OUT):
 
 
 def snapshot_sources(output_dir=OUT):
+    """Archive current runtime sources without changing an older frozen snapshot."""
     output_dir = Path(output_dir)
     dest = output_dir / 'source_snapshot'
-    dest.mkdir(exist_ok=True)
     paths = [ROOT / 'scripts' / name for name in ['vcg_boundary_reference_eval.py', 'vcg_reference_metrics.py',
-             'vcg_reference_annotation_ui.py', 'vcg_reference_plots.py', 'create_notebook08.py',
+             'vcg_reference_annotation_ui.py', 'vcg_reference_plots.py',
              'vcg_all_case_visual_audit.py','vcg_all_case_gallery.py','vcg_boundary_disagreement_panels.py',
              'vcg_visual_review_data.py','vcg_visual_review_ui.py','vcg_visual_review_overview.py']]
     paths += sorted(set((ROOT/'tests').glob('test_vcg_reference*.py')) |
@@ -465,10 +465,25 @@ def snapshot_sources(output_dir=OUT):
     for path in paths:
         if not path.is_file():
             raise FileNotFoundError(path)
-        relative = path.relative_to(ROOT)
-        target = dest / relative
+        manifest.append({'source': str(path.relative_to(ROOT)), 'sha256': sha256(path)})
+    previous = dest / 'source_manifest.json'
+    if dest.exists() and any(dest.iterdir()):
+        previous_manifest = json.loads(previous.read_text()) if previous.is_file() else None
+        same_files = all((dest / row['source']).is_file() and
+                         sha256(dest / row['source']) == row['sha256'] for row in manifest)
+        if previous_manifest != manifest or not same_files:
+            version = hashlib.sha256(json.dumps(manifest, sort_keys=True).encode()).hexdigest()[:16]
+            dest = output_dir / 'source_snapshots' / version
+    dest.mkdir(parents=True, exist_ok=True)
+    for path, row in zip(paths, manifest):
+        target = dest / row['source']
         target.parent.mkdir(parents=True, exist_ok=True)
-        target.write_bytes(path.read_bytes())
-        manifest.append({'source': str(relative), 'sha256': sha256(path)})
-    write_json(dest / 'source_manifest.json', manifest)
+        if target.exists():
+            if sha256(target) != row['sha256']:
+                raise ValueError(f'Archived source differs: {target}')
+        else:
+            target.write_bytes(path.read_bytes())
+    manifest_path = dest / 'source_manifest.json'
+    if not manifest_path.exists():
+        write_json(manifest_path, manifest)
     return manifest

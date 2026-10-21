@@ -17,7 +17,7 @@ Bản gốc được sao lưu trước sửa tại `backups/2026-10-10-before-pr
 
 Vị trí trong 05 (đếm ô từ 1): ô 3 import engine; ô 8 QC/PSD đầu vào; ô 10 `preprocess_xyz(..., return_diagnostics=True)`; ô 12 đáp ứng FIR/Notch; ô 14 quyết định/diagnostics; ô 22 `representative_beat(..., quality=...)`; ô 59 so sánh A/B/C; ô 61 chạy tests; ô 65 hàm thí nghiệm cửa sổ với cấu hình legacy. Các hàm sửa trực tiếp là `Config`, `preprocess_xyz`, `representative_beat`, `process_record`, `qc_row`; các hàm FIR/powerline/evaluation mới nằm trong hai module chuyên trách.
 
-Notebook 02/03, `pipeline_core.py`, `test_run.py`, `create_visualizations.py`, `render_vcg_comparison.py` còn dùng pipeline lịch sử (có SG dài và detector khác). Chưa migration chúng để không viết lại dự án/ML. Cần đồng bộ riêng trước khi trộn feature hoặc dùng hình của chúng như kết quả pipeline mới. `vcg_12_features.csv` cũ không được ghi đè.
+Notebook 02/03 giữ pipeline lịch sử (có SG dài và detector khác). Các script thử độc lập trùng phần này đã được xoá trong đợt dọn dự án; nội dung nghiên cứu còn trong notebook. Cần phân biệt feature/hình lịch sử với pipeline mới. `vcg_12_features.csv` cũ được giữ để đối chiếu và kiểm tra nguồn.
 
 ## Bộ lọc cũ và mới
 

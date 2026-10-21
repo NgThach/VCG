@@ -88,6 +88,8 @@ Chi tiết đầu vào, thứ tự phụ thuộc, kiểm chứng và giới hạ
 
 ## 4. Các file cần đọc
 
+Xem [cấu trúc dự án và các script đã dọn](docs/PROJECT_STRUCTURE.md).
+
 - `vcg_pipeline.py`, `vcg_preprocessing.py`: các bước xử lý và tách biên V1.
 - `vcg_t_almeida.py`: phép biến đổi wavelet và hai nhánh tìm T-on/T-off bằng TLS.
 - `scripts/`: chạy toàn bộ dữ liệu, báo cáo, giao diện xem và vẽ hình.
