@@ -14,7 +14,7 @@ from pathlib import Path
 import sys
 import traceback
 
-os.environ.setdefault("MPLCONFIGDIR", "/private/tmp/vcg_t_almeida_mpl")
+os.environ.setdefault("MPLCONFIGDIR", str(__import__('pathlib').Path(__import__('tempfile').gettempdir()) / 'vcg_t_almeida_mpl'))
 os.environ.setdefault("OMP_NUM_THREADS", "1")
 os.environ.setdefault("OPENBLAS_NUM_THREADS", "1")
 ROOT = Path(__file__).resolve().parents[1]
@@ -33,7 +33,8 @@ ARTIFACT_INPUT = ROOT / "outputs/vcg_full_evaluation/artifacts"
 
 
 def sha(path):
-    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+    from project_integrity import file_digest
+    return file_digest(path)
 
 
 def write_json(path, value):

@@ -1,0 +1,12 @@
+{
+  "ptbdb": {
+    "filename": "ptbdb-1.0.0.tar.gz",
+    "url": "https://github.com/NgThach/VCG/releases/download/data-v1/ptbdb-1.0.0.tar.gz",
+    "bytes": 1349695961,
+    "sha256": "a4bcb1ddf97af7fda038e6c5ce7b37e62efa766e386a41790369917bd351b047",
+    "upstream": "https://physionet.org/content/ptbdb/1.0.0/",
+    "license": "https://physionet.org/content/ptbdb/view-license/1.0.0/",
+    "files": 1651,
+    "recordings": 549
+  }
+}

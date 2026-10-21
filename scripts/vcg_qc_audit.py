@@ -13,7 +13,7 @@ import os
 from pathlib import Path
 import sys
 
-os.environ.setdefault('MPLCONFIGDIR', '/private/tmp/vcg_qc_audit_matplotlib')
+os.environ.setdefault('MPLCONFIGDIR', str(__import__('pathlib').Path(__import__('tempfile').gettempdir()) / 'vcg_qc_audit_matplotlib'))
 os.environ.setdefault('OPENBLAS_NUM_THREADS', '1')
 os.environ.setdefault('OMP_NUM_THREADS', '1')
 import matplotlib

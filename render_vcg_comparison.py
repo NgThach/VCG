@@ -28,7 +28,7 @@ rec_hc_path = DATA_ROOT / "patient104/s0306lre"
 OUT_DIR = Path("figures")
 OUT_DIR.mkdir(exist_ok=True)
 
-ARTIFACT_DIR = Path("/Users/nguyenbaothach/.gemini/antigravity-ide/brain/07eacadf-4f57-41ec-94cd-bb4bb5821f5f")
+ARTIFACT_DIR = Path("outputs/vcg_comparison_artifacts")
 ARTIFACT_DIR.mkdir(parents=True, exist_ok=True)
 
 FEATURE_NAMES = [

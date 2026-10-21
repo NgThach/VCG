@@ -8,18 +8,20 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import sys
 from datetime import datetime, timezone
 from pathlib import Path
 import textwrap
 
-os.environ.setdefault('MPLCONFIGDIR', '/private/tmp/vcg_t_almeida_mpl')
-os.environ.setdefault('IPYTHONDIR', '/private/tmp/vcg_qc_audit_ipython')
+os.environ.setdefault('MPLCONFIGDIR', str(__import__('pathlib').Path(__import__('tempfile').gettempdir()) / 'vcg_t_almeida_mpl'))
+os.environ.setdefault('IPYTHONDIR', str(__import__('pathlib').Path(__import__('tempfile').gettempdir()) / 'vcg_qc_audit_ipython'))
 os.environ.setdefault('OPENBLAS_NUM_THREADS', '1')
 os.environ.setdefault('OMP_NUM_THREADS', '1')
 
 import nbformat as nb
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
 TARGET = ROOT / '08_QRS_T_Loop_Reference_Error_Analysis.ipynb'
 EXPERIMENT = ROOT / 'outputs/vcg_t_almeida_v2_experiment'
 AUDIT = EXPERIMENT / 'notebook08_extension'
@@ -34,7 +36,8 @@ mỗi ca có XYZ/biên T và T loops V1/V2. Có thể đổi `ALMEIDA_RECORD_ID`
 
 
 def sha(path):
-    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+    from project_integrity import file_digest
+    return file_digest(path)
 
 
 def build_extension_cells():

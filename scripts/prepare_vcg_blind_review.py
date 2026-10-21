@@ -9,7 +9,7 @@ import argparse
 import os
 from pathlib import Path
 
-os.environ.setdefault('MPLCONFIGDIR', '/private/tmp/vcg_full_evaluation_matplotlib')
+os.environ.setdefault('MPLCONFIGDIR', str(__import__('pathlib').Path(__import__('tempfile').gettempdir()) / 'vcg_full_evaluation_matplotlib'))
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt

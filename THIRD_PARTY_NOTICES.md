@@ -20,10 +20,11 @@ phương pháp; chưa xác nhận tương đương từng đầu ra với chươ
 
 ## Dữ liệu PTB
 
-Dữ liệu gốc không được lưu trong Git. Tải từ
+Dữ liệu gốc được phân phối riêng trong GitHub Release `data-v1`, giữ nguyên
+các file waveform/header và checksum từ PhysioNet. Nguồn gốc:
 [PTB Diagnostic ECG Database 1.0.0](https://physionet.org/content/ptbdb/1.0.0/),
 theo điều kiện sử dụng và giấy phép Open Data Commons Attribution License v1.0
-được công bố tại nguồn. Các CSV mang tiền tố `vcg_` và danh sách chia tập là
+được công bố tại [trang giấy phép](https://physionet.org/content/ptbdb/view-license/1.0.0/). Các CSV mang tiền tố `vcg_` và danh sách chia tập là
 kết quả/danh sách dẫn xuất từ dữ liệu này; không phải mốc QRS/T do chuyên gia xác nhận.
 
 Trích dẫn dữ liệu:

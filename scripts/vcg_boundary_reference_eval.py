@@ -46,11 +46,8 @@ SOURCE_URLS = [
 
 
 def sha256(path):
-    h = hashlib.sha256()
-    with Path(path).open('rb') as f:
-        for block in iter(lambda: f.read(1024 * 1024), b''):
-            h.update(block)
-    return h.hexdigest()
+    from project_integrity import file_digest
+    return file_digest(path)
 
 
 def clean(value):

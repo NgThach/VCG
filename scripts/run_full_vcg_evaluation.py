@@ -24,7 +24,7 @@ import time
 import traceback
 from zoneinfo import ZoneInfo
 
-os.environ.setdefault('MPLCONFIGDIR', '/private/tmp/vcg_full_evaluation_matplotlib')
+os.environ.setdefault('MPLCONFIGDIR', str(__import__('pathlib').Path(__import__('tempfile').gettempdir()) / 'vcg_full_evaluation_matplotlib'))
 os.environ.setdefault('OPENBLAS_NUM_THREADS', '1')
 os.environ.setdefault('OMP_NUM_THREADS', '1')
 import matplotlib
@@ -58,7 +58,8 @@ ANNOTATION_COLUMNS = ['record_id', 'patient_id', 'label_name', 'split',
 
 
 def sha256(path):
-    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+    from project_integrity import file_digest
+    return file_digest(path)
 
 
 def jsonable(value):

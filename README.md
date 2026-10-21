@@ -4,124 +4,87 @@ Dự án xử lý ba kênh Frank **X/Y/Z** của PTB, tạo nhịp đại diện
 tách QRS và T, trích xuất 12 đặc trưng và so sánh cách tìm biên T cũ (V1) với
 Wavelet/TLS (V2). Phạm vi MI/HC hiện có **448 bản ghi / 200 bệnh nhân**.
 
-Repo chứa mã nguồn, 9 notebook, các kiểm thử, tài liệu và danh sách chia tập.
-Dữ liệu gốc, cache, checkpoint, hình và gallery được tạo lại trên máy chạy.
-Các notebook lưu trong Git gồm mã và Markdown; output được bỏ khi commit để
-Notebook08 không vượt giới hạn file GitHub. File notebook có hình trên máy gốc
-vẫn giữ nguyên.
+Repo chứa mã nguồn, 9 notebook, kiểm thử và danh sách chia tập theo bệnh nhân.
+**Dataset đầy đủ đã được đính kèm tại [GitHub Release data-v1](https://github.com/NgThach/VCG/releases/tag/data-v1).**
+`git clone` tải mã nguồn; lệnh chuẩn bị bên dưới tải dataset và kiểm checksum.
+Các kết quả trung gian được tính lại tại máy chạy, không phụ thuộc cache trên máy tác giả.
 
-## 1. Cài đặt
+## 1. Clone và cài đặt
 
-Clone repo và chuyển vào thư mục dự án:
+Đã kiểm tra bằng **Python 3.11**. Chạy từ thư mục gốc repo:
 
 ```bash
 git clone https://github.com/NgThach/VCG.git
 cd VCG
-```
-
-Dùng **Python 3.11 trở lên**. Các phiên bản trong `requirements.txt` là phiên bản
-của môi trường đã dùng cho dự án.
-
-```bash
 python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install -r requirements.txt
 python -m ipykernel install --user --name ptb-vcg --display-name "PTB VCG"
 ```
 
-Chạy các lệnh dưới đây từ thư mục gốc repo. Trên Windows, thay lệnh kích hoạt
-môi trường bằng `.venv\Scripts\activate`.
+Windows: kích hoạt bằng `.venv\Scripts\activate`. Trong Jupyter chọn kernel
+**PTB VCG** để dùng đúng thư viện vừa cài.
 
-## 2. Tải dữ liệu PTB
+## 2. Tải và kiểm tra dataset
+
+```bash
+python project_setup.py --verify
+```
+
+Lệnh tải gói **1,35 GB**, kiểm SHA-256 của gói và từng file sau giải nén,
+đặt đúng vị trí `content/ptbdb/physionet.org/files/ptbdb/1.0.0/`.
+Có **549 `.hea` + 549 `.dat` + 549 `.xyz`**, `RECORDS`, `README`, `CONTROLS`
+và `SHA256SUMS.txt` từ PhysioNet. Không cần đăng nhập GitHub khi tải release công khai.
+Cần kết nối Internet lần tải đầu và khoảng **8 GB dung lượng trống** cho dữ liệu,
+gói tải, kết quả và môi trường Python.
 
 Nguồn: [PTB Diagnostic ECG Database 1.0.0](https://physionet.org/content/ptbdb/1.0.0/).
-Dữ liệu chiếm khoảng 1.8 GB khi giải nén. Lệnh sau tải vào đúng đường dẫn mà
-notebook và pipeline sử dụng, giữ cấu trúc thư mục bệnh nhân:
+Giấy phép/trích dẫn ở `THIRD_PARTY_NOTICES.md`.
+Nếu đã có dữ liệu, đặt đủ file tại đường dẫn trên rồi chạy `--verify`;
+chương trình không ghi đè file có checksum khác.
+
+## 3. Chạy notebook
 
 ```bash
-python - <<'PY'
-from pathlib import Path
-import wfdb
-
-destination = Path("content/ptbdb/physionet.org/files/ptbdb/1.0.0")
-destination.mkdir(parents=True, exist_ok=True)
-wfdb.dl_database("ptbdb", str(destination), keep_subdirs=True)
-PY
-```
-
-Nếu đã có dữ liệu trên máy, đặt hoặc liên kết thư mục chứa `patient001/`,
-`patient002/`, ... vào vị trí trên. Cần cả `.hea`, `.dat` và `.xyz` mà header trỏ tới.
-
-## 3. Tạo dữ liệu V1 và chạy luồng chính
-
-Các bước dưới dùng dữ liệu tải về và tạo thư mục `outputs/` mới. Không cần chạy
-lại thí nghiệm phân loại cũ ở Notebook02. `data/split_manifest.csv` giữ đúng
-phân chia theo bệnh nhân hiện tại; các CSV `vcg_*` ở root được giữ làm đầu vào
-đối chiếu lịch sử và kiểm tra nguồn.
-
-### Bước A — Tạo median, biên QRS/T và kết quả V1
-
-```bash
-python scripts/run_full_vcg_evaluation.py --workers 4 --split-manifest data/split_manifest.csv
-```
-
-Kết quả: `outputs/vcg_full_evaluation/`, gồm median XYZ và biên đã lưu. Nếu lần
-chạy bị ngắt, thêm `--resume` với cùng cấu hình và danh sách chia tập.
-
-### Bước B — Tạo các bảng train/valid/test và kiểm tra QC
-
-Chạy notebook thành **bản có tiền tố `executed_`** để giữ nguyên các file nguồn
-được pipeline kiểm tra bằng hash. Bản thực thi nằm tại root, nên các liên kết
-gallery tương đối vẫn hoạt động.
-
-```bash
-jupyter nbconvert --to notebook --execute 06_PTB_VCG_12_Features_Train_Valid_Test.ipynb --output executed_06 --ExecutePreprocessor.kernel_name=ptb-vcg --ExecutePreprocessor.timeout=-1
-jupyter nbconvert --to notebook --execute 07_VCG_QC_vs_Delineation_Audit.ipynb --output executed_07 --ExecutePreprocessor.kernel_name=ptb-vcg --ExecutePreprocessor.timeout=-1
-```
-
-Kết quả: `outputs/vcg_12_features_train_valid_test/` và `outputs/vcg_qc_audit_v1/`.
-QC là cờ yêu cầu xem lại, không phải nhãn xác nhận biên sai.
-
-### Bước C — Chạy thí nghiệm tìm biên T bằng Wavelet/TLS
-
-```bash
-python scripts/run_vcg_t_almeida_experiment.py
-```
-
-Kết quả: `outputs/vcg_t_almeida_v2_experiment/`. Mỗi ID có trạng thái, mốc T,
-lý do thiếu, các vòng TLS và T loop nếu tìm được đủ hai biên hợp lệ. Các ca
-thất bại vẫn có trong danh sách và gallery. Mở giao diện tại:
-
-```text
-outputs/vcg_t_almeida_v2_experiment/gallery/index.html
-```
-
-### Bước D — Tạo phần trực quan của tất cả bản ghi trong Notebook08
-
-Chạy bước này **sau B và C**, vì Notebook08 đọc kết quả của cả V1 lẫn V2.
-
-```bash
-jupyter nbconvert --to notebook --execute 08_QRS_T_Loop_Reference_Error_Analysis.ipynb --output executed_08 --ExecutePreprocessor.kernel_name=ptb-vcg --ExecutePreprocessor.timeout=-1
 jupyter lab
 ```
 
-Mở `executed_08.ipynb`: mục **14C** là gallery V1/V2; **14D–14E** giải thích
-từng bước và các ca cần xem lại; **14F** nhúng 75 trang hình đủ 448 ID, gồm cả
-ca thiếu biên/median. Bản HTML xem toàn bộ các trang:
+Mỗi notebook có cell **Chuẩn bị dữ liệu trên máy này** ngay đầu file.
+Chọn **Run All**. Cell này tải dữ liệu nếu thiếu và tạo các đầu vào cần thiết:
 
-```text
-outputs/vcg_t_almeida_v2_experiment/notebook08_extension/all_record_t_loops/index.html
-```
+- **01–05:** đọc PTB gốc, không cần output từ notebook khác.
+- **06:** tạo median/artifact V1 cho đủ 448 ID rồi xuất train/valid/test.
+- **07:** tự chạy 06 nếu chưa có bảng features; tạo kiểm tra QC và mẫu review.
+- **08:** tự tạo đầu vào của 06–07 và kết quả Wavelet/TLS nếu thiếu; hiển thị đủ 448 ID.
+- **09:** tự tạo đầu vào V1 của 06; chạy và giải thích thí nghiệm Wavelet/TLS.
 
-Notebook09 giải thích Wavelet/TLS và từng thuật ngữ bằng tiếng Việt. Có thể
-đọc mã/Markdown trực tiếp, hoặc tạo bản có hình sau bước C:
+**Lần chạy đầu của 06–09 có thể kéo dài nhiều phút** vì tính trên toàn bộ cohort
+và tạo hàng trăm hình. Dòng tiến độ hiển thị bước đang chạy. Giữ nguyên code/cấu hình
+để tiếp tục dùng checkpoint sau khi ngắt; khi thay thuật toán, dùng thư mục kết quả mới.
+
+Có thể chuẩn bị trước khi mở riêng Notebook08:
 
 ```bash
-jupyter nbconvert --to notebook --execute 09_VCG_T_Loop_Almeida_Wavelet_TLS_Experiment.ipynb --output executed_09 --ExecutePreprocessor.kernel_name=ptb-vcg --ExecutePreprocessor.timeout=-1
+python project_setup.py --notebook 8 --verify
 ```
 
-Khi thay thuật toán, cấu hình hoặc nguồn dữ liệu, dùng thư mục kết quả mới theo
-các tùy chọn của runner. Không ghép checkpoint thuộc các phiên bản khác nhau.
+Hoặc chạy không qua giao diện, dùng đúng Python đang kích hoạt và lưu output riêng:
+
+```bash
+python scripts/execute_notebook.py 08_QRS_T_Loop_Reference_Error_Analysis.ipynb
+python scripts/execute_notebook.py 09_VCG_T_Loop_Almeida_Wavelet_TLS_Experiment.ipynb
+```
+
+Kết quả là `executed_08_*.ipynb`, `executed_09_*.ipynb` ở root; log và thống kê
+ở `outputs/reproducibility/`. Chạy lần lượt **01 → 09** nếu muốn kiểm tra toàn bộ lịch sử.
+Notebook02 ghi lại các CSV legacy ở root; nên chạy trước khi đóng băng kết quả 07–09.
+
+Notebook08 mục **14F** nhúng 75 trang hình bao phủ 448 ID, kể cả thiếu median/biên.
+Gallery Wavelet/TLS: `outputs/vcg_t_almeida_v2_experiment/gallery/index.html`.
+Notebook09 giải thích các bước và thuật ngữ bằng tiếng Việt.
+
+Chi tiết đầu vào, thứ tự phụ thuộc, kiểm chứng và giới hạn:
+[docs/REPRODUCIBILITY.md](docs/REPRODUCIBILITY.md).
 
 ## 4. Các file cần đọc
 

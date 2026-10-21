@@ -3,8 +3,8 @@ from pathlib import Path
 import os
 import textwrap
 
-os.environ.setdefault('MPLCONFIGDIR', '/private/tmp/vcg_qc_audit_matplotlib')
-os.environ.setdefault('IPYTHONDIR', '/private/tmp/vcg_qc_audit_ipython')
+os.environ.setdefault('MPLCONFIGDIR', str(__import__('pathlib').Path(__import__('tempfile').gettempdir()) / 'vcg_qc_audit_matplotlib'))
+os.environ.setdefault('IPYTHONDIR', str(__import__('pathlib').Path(__import__('tempfile').gettempdir()) / 'vcg_qc_audit_ipython'))
 os.environ.setdefault('OPENBLAS_NUM_THREADS', '1')
 os.environ.setdefault('OMP_NUM_THREADS', '1')
 import nbformat as nb

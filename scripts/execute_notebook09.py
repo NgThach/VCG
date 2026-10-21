@@ -9,14 +9,14 @@ import time
 
 ROOT=Path(__file__).resolve().parents[1]
 OUT=ROOT/'outputs/vcg_t_almeida_v2_experiment'
-os.environ.setdefault('MPLCONFIGDIR','/private/tmp/vcg_t_almeida_mpl')
+os.environ.setdefault('MPLCONFIGDIR',str(__import__('pathlib').Path(__import__('tempfile').gettempdir()) / 'vcg_t_almeida_mpl'))
 runtime=OUT/'runtime_jupyter'
 spec=runtime/'kernels/vcg09-ipcv'
 spec.mkdir(parents=True,exist_ok=True)
 (spec/'kernel.json').write_text(json.dumps(dict(argv=[sys.executable,'-m','ipykernel_launcher','-f','{connection_file}'],
-    display_name='ipcv (Notebook09 local)',language='python',env={'MPLCONFIGDIR':'/private/tmp/vcg_t_almeida_mpl'})))
+    display_name='ipcv (Notebook09 local)',language='python',env={'MPLCONFIGDIR':str(__import__('pathlib').Path(__import__('tempfile').gettempdir()) / 'vcg_t_almeida_mpl')})))
 os.environ['JUPYTER_PATH']=str(runtime)+(os.pathsep+os.environ['JUPYTER_PATH'] if os.environ.get('JUPYTER_PATH') else '')
-os.environ['JUPYTER_RUNTIME_DIR']='/private/tmp/vcg_t_almeida_jupyter_runtime'
+os.environ['JUPYTER_RUNTIME_DIR']=str(__import__('pathlib').Path(__import__('tempfile').gettempdir()) / 'vcg_t_almeida_jupyter_runtime')
 Path(os.environ['JUPYTER_RUNTIME_DIR']).mkdir(exist_ok=True)
 import nbformat
 from nbclient import NotebookClient

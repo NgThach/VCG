@@ -6,7 +6,7 @@ File notebook có hậu tố `(2)` không có trong workspace; baseline là note
 hiện có và các module mà notebook đó import, được sao lưu kèm SHA-256.
 
 ```sh
-/Users/nguyenbaothach/miniconda3/envs/ipcv/bin/python scripts/run_full_vcg_evaluation.py --workers 4
+python scripts/run_full_vcg_evaluation.py --workers 4
 ```
 
 Mặc định đọc PTB tại `content/ptbdb/physionet.org/files/ptbdb/1.0.0`, xử lý
@@ -15,7 +15,7 @@ Script từ chối ghi vào thư mục đã có kết quả khi không có `--re
 Mỗi record có checkpoint nguyên tử, JSON chẩn đoán và NPZ các đường tính toán.
 
 ```sh
-/Users/nguyenbaothach/miniconda3/envs/ipcv/bin/python scripts/run_full_vcg_evaluation.py --resume --workers 4
+python scripts/run_full_vcg_evaluation.py --resume --workers 4
 ```
 
 Resume kiểm tra hash baseline, mã batch/report/comparison, dữ liệu tín hiệu/header,
@@ -53,9 +53,9 @@ Sau batch và trước khi chuyên gia nhập dữ liệu, có thể tạo bộ 
 biên dự đoán và bổ sung phụ lục chẩn đoán chi tiết:
 
 ```sh
-/Users/nguyenbaothach/miniconda3/envs/ipcv/bin/python scripts/prepare_vcg_blind_review.py
-/Users/nguyenbaothach/miniconda3/envs/ipcv/bin/python scripts/compare_vcg_annotations.py --output-dir outputs/vcg_full_evaluation --annotations outputs/vcg_full_evaluation/annotations/manual_review_template.csv
-/Users/nguyenbaothach/miniconda3/envs/ipcv/bin/python scripts/finalize_vcg_evaluation.py
+python scripts/prepare_vcg_blind_review.py
+python scripts/compare_vcg_annotations.py --output-dir outputs/vcg_full_evaluation --annotations outputs/vcg_full_evaluation/annotations/manual_review_template.csv
+python scripts/finalize_vcg_evaluation.py
 ```
 
 Lệnh comparison trên template pending tạo bảng rỗng và audit, không tạo ground
@@ -75,7 +75,7 @@ lượt đầu, dùng chuyên gia độc lập và ghi giao thức/nguồn. Ch�
 reviewer và `independent_reference=true` sau khi xác nhận độc lập.
 
 ```sh
-/Users/nguyenbaothach/miniconda3/envs/ipcv/bin/python scripts/compare_vcg_annotations.py --output-dir outputs/vcg_full_evaluation --annotations reviewed_boundaries.csv
+python scripts/compare_vcg_annotations.py --output-dir outputs/vcg_full_evaluation --annotations reviewed_boundaries.csv
 ```
 
 `median_relative_ms` là thời gian so với anchor trên đúng median beat đã lưu.
@@ -89,5 +89,5 @@ QRS event reference cần xác nhận đầy đủ mọi nhịp trong khoảng t
 để TP/FP/FN có nghĩa. Xem docstring `compare_vcg_annotations.py` cho schema.
 
 ```sh
-/Users/nguyenbaothach/miniconda3/envs/ipcv/bin/python -m unittest discover -s tests -p 'test_vcg*.py' -v
+python -m unittest discover -s tests -p 'test_vcg*.py' -v
 ```
