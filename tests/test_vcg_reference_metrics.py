@@ -71,6 +71,14 @@ class ReferenceMetricsTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             engine.load_median(self.root,self.rid)
 
+    def test_utf8_artifact_with_vietnamese_metadata(self):
+        # These UTF-8 bytes cannot be decoded using the Windows cp1258 default.
+        self.artifact['note'] = 'Đánh giá tín hiệu, biên sóng T'
+        self.jp.write_bytes(json.dumps(self.artifact, ensure_ascii=False).encode('utf-8'))
+        median = engine.load_median(self.root, self.rid)
+        self.assertEqual(median['artifact']['note'], self.artifact['note'])
+        np.testing.assert_array_equal(median['xyz'], self.xyz)
+
     def test_no_reference_has_no_zero_errors_and_retains_denominators(self):
         results = engine.evaluate_references(self.frame,pd.DataFrame(),self.root)
         self.assertEqual(len(results['boundary_error_per_record']),4)

@@ -63,7 +63,7 @@ def load_inputs(input_dir=None, evaluation_dir=None):
         tables.append(part)
     frame = pd.concat(tables, ignore_index=True).sort_values('record_id').reset_index(drop=True)
     manifest = pd.read_csv(input_dir/'split_manifest.csv')
-    config = json.loads((input_dir/'config.json').read_text())
+    config = json.loads((input_dir/'config.json').read_text(encoding="utf-8"))
     if len(frame) != 448 or not frame.record_id.is_unique:
         raise ValueError('This PTB audit requires the verified 448 unique HC/MI recordings')
     if set(frame.record_id) != set(manifest.record_id) or not manifest.record_id.is_unique:
@@ -120,7 +120,7 @@ def initialize_audit(frame, input_dir, evaluation_dir, output_dir, source_config
     )
     path = output_dir/'audit_config.json'
     if path.exists():
-        prior = json.loads(path.read_text())
+        prior = json.loads(path.read_text(encoding="utf-8"))
         if prior.get('frozen_inputs') != jsonable(frozen):
             raise ValueError('Audit source/data/config changed; choose a new output directory')
     else:
@@ -191,7 +191,7 @@ def _fraction(value, denominator):
 def audit_record(row, artifact_root, cfg=None):
     cfg = cfg or Config()
     safe = row['record_id'].replace('/', '_')
-    art = json.loads((Path(artifact_root)/(safe+'.json')).read_text())
+    art = json.loads((Path(artifact_root)/(safe+'.json')).read_text(encoding="utf-8"))
     common = {key: row[key] for key in COMMON}
     common.update(evidence_level='unverified', audit_group='D_unverified',
                   boundary_time_reference='median_relative_ms')
@@ -369,7 +369,7 @@ def boundary_audits(frame, artifact_root, output_dir, cfg=None):
 def failure_analysis(frame, artifact_root, output_dir):
     rows = []
     for _, row in frame[~frame.extraction_success].iterrows():
-        art = json.loads((Path(artifact_root)/(row.record_id.replace('/', '_')+'.json')).read_text())
+        art = json.loads((Path(artifact_root)/(row.record_id.replace('/', '_')+'.json')).read_text(encoding="utf-8"))
         beat_rows = art.get('beat_qc', [])
         reasons = pd.Series([b['reason'] for b in beat_rows], dtype=str).value_counts().to_dict()
         steps = dict(input_quality='completed', qrs_detection='anchors_returned',
@@ -617,7 +617,7 @@ def prepare_blinded_review(output_dir, artifact_root, data_root, cfg=None):
     rows = []
     for _, row in sample.iterrows():
         safe = row.record_id.replace('/', '_')
-        art = json.loads((Path(artifact_root)/(safe+'.json')).read_text())
+        art = json.loads((Path(artifact_root)/(safe+'.json')).read_text(encoding="utf-8"))
         with np.load(Path(artifact_root)/(safe+'.npz')) as saved:
             if 'median_xyz' in saved:
                 xyz, tt = saved['median_xyz'], saved['time_ms']
@@ -711,7 +711,7 @@ def write_audit_report(output_dir):
     t = pd.read_csv(output_dir/'t_boundary_audit.csv')
     freq = pd.read_csv(output_dir/'qc_flag_frequency.csv')
     by_label = pd.read_csv(output_dir/'qc_by_label.csv')
-    totals = json.loads((output_dir/'qc_totals.json').read_text())
+    totals = json.loads((output_dir/'qc_totals.json').read_text(encoding="utf-8"))
     failures = pd.read_csv(output_dir/'failed_records_analysis.csv')
     rank = pd.read_csv(output_dir/'feature_sensitivity_full12_rank.csv')
     primary = rank[(rank.scope == 'train_valid') & (rank.grouping == 'all')].copy()
@@ -719,7 +719,7 @@ def write_audit_report(output_dir):
     primary['p95_relative_pct'] = primary.relative_delta_p95*100
     ranking = primary[['feature','unit','absolute_delta_median','absolute_delta_p95','median_relative_pct','p95_relative_pct','n_valid','n_eligible_but_invalid']].round(5)
     scenarios = pd.read_csv(output_dir/'sensitivity_scenarios.csv')
-    reference = json.loads((output_dir/'reference_status.json').read_text())
+    reference = json.loads((output_dir/'reference_status.json').read_text(encoding="utf-8"))
     sources = write_reference_source_audit(output_dir)
     review = pd.read_csv(output_dir/'manual_review_template.csv')
     stonly = int(f.qc_flags.eq('st_level_requires_review').sum())
@@ -743,7 +743,7 @@ def write_audit_report(output_dir):
     t_on_gap = int(t.t_on_method_gap_ms.gt(SCREENS['method_gap_ms']).sum())
     t_off_gap = int(t.t_off_method_gap_ms.gt(SCREENS['method_gap_ms']).sum())
     st_threshold_missing = int((t.st_flag_present.fillna(False) & t.t_threshold_on_ms.isna()).sum())
-    source_findings = json.loads((output_dir/'source_audit_findings.json').read_text())
+    source_findings = json.loads((output_dir/'source_audit_findings.json').read_text(encoding="utf-8"))
     findings_table = pd.DataFrame(source_findings)
     main_label = by_label[by_label.split.eq('all')].copy()
     sample_counts = review.groupby('label_name').agg(n_records=('record_id','size'),n_patients=('patient_id','nunique')).reset_index()

@@ -28,7 +28,7 @@ def digest(path):
 
 
 def check_dataset(deep=False):
-    manifest = json.loads((ROOT / 'data/ptbdb-files.json').read_text())
+    manifest = json.loads((ROOT / 'data/ptbdb-files.json').read_text(encoding="utf-8"))
     missing, corrupt = [], []
     for name, expected in manifest.items():
         path = DATA_ROOT / name
@@ -102,13 +102,13 @@ def ensure_dataset():
                          + ', '.join(state['corrupt'][:8]))
     if state['complete']:
         return state
-    resource = json.loads((ROOT / 'data/resources.json').read_text())['ptbdb']
+    resource = json.loads((ROOT / 'data/resources.json').read_text(encoding="utf-8"))['ptbdb']
     cache = ROOT / 'content/downloads'
     cache.mkdir(parents=True, exist_ok=True)
     archive = cache / resource['filename']
     if not archive.exists() or archive.stat().st_size != resource['bytes'] or digest(archive) != resource['sha256']:
         download_bundle(resource, cache, archive)
-    manifest = json.loads((ROOT / 'data/ptbdb-files.json').read_text())
+    manifest = json.loads((ROOT / 'data/ptbdb-files.json').read_text(encoding="utf-8"))
     DATA_ROOT.mkdir(parents=True, exist_ok=True)
     # Explicit members only: reject links, traversal, duplicates and unlisted files.
     with tarfile.open(archive, 'r:gz') as bundle:
@@ -141,7 +141,10 @@ def ensure_dataset():
 
 def run(*arguments):
     print('Chạy:', ' '.join(str(arg) for arg in arguments), flush=True)
-    subprocess.run([sys.executable, *map(str, arguments)], cwd=ROOT, check=True)
+    # Notebook prerequisites run in child kernels; keep their JSON/text IO UTF-8
+    # on Windows too, including older notebooks that use Path.read_text().
+    subprocess.run([sys.executable, *map(str, arguments)], cwd=ROOT, check=True,
+                   env={**os.environ, 'PYTHONUTF8': '1', 'PYTHONIOENCODING': 'utf-8'})
 
 
 def execute(number):
@@ -154,14 +157,63 @@ def full_v1_ready():
     completion = folder / 'evaluation/completion.json'
     if not completion.is_file():
         return False
-    state = json.loads(completion.read_text())
-    ids = [row.split(',')[0] for row in (ROOT / 'data/split_manifest.csv').read_text().splitlines()[1:]]
+    state = json.loads(completion.read_text(encoding="utf-8"))
+    ids = [row.split(',')[0] for row in (ROOT / 'data/split_manifest.csv').read_text(encoding="utf-8").splitlines()[1:]]
     return (state.get('full_dataset_complete') is True and state.get('completed_records') == 448
             and all((folder / 'artifacts' / (rid.replace('/', '_') + ext)).is_file()
                     for rid in ids for ext in ('.json', '.npz')))
 
 
+def cached_v1_inputs_ready():
+    """Validate distributed median inputs without claiming a completed evaluation.
+
+    A source notebook can gain plots/text while the numerical V1 modules stay
+    identical. Do not resume or rewrite that historical evaluation in this case.
+    Notebook 06 still extracts features from raw; V2 independently checks their
+    parity against these medians before using them.
+    """
+    folder = ROOT / 'outputs/vcg_full_evaluation'
+    config_path = folder / 'config.json'
+    manifest_path = folder / 'split_manifest.csv'
+    if not config_path.is_file() or not manifest_path.is_file():
+        return False
+    import pandas as pd
+    from dataclasses import asdict
+    from vcg_preprocessing import Config
+    from scripts.vcg_reference_metrics import load_median
+
+    try:
+        config = json.loads(config_path.read_text(encoding='utf-8'))
+        # All numerical preprocessing/detection/delineation/feature code lives
+        # in these two modules. Never ignore a mismatch in either one.
+        hashes = config.get('baseline_hashes', {})
+        if any(hashes.get(name) != digest(ROOT / name)
+               for name in ('vcg_pipeline.py', 'vcg_preprocessing.py')):
+            return False
+        if config.get('config') != json.loads(json.dumps(asdict(Config()))):
+            return False
+        columns = ['record_id', 'patient_id', 'split', 'label_name']
+        expected = pd.read_csv(ROOT / 'data/split_manifest.csv')[columns]
+        saved = pd.read_csv(manifest_path)[columns]
+        for frame in (expected, saved):
+            frame['split'] = frame['split'].replace({'val': 'valid', 'validation': 'valid'})
+        if (expected.empty or not expected.record_id.is_unique or not saved.record_id.is_unique
+                or not expected.sort_values('record_id').reset_index(drop=True).equals(
+                    saved.sort_values('record_id').reset_index(drop=True))):
+            return False
+        for rid in expected.record_id:
+            # Verifies record identity, finite XYZ, fs, anchor and ms time grid;
+            # recorded extraction failures may have xyz=None, never a fake beat.
+            load_median(folder / 'artifacts', rid)
+    except (OSError, ValueError, KeyError, TypeError):
+        return False
+    return True
+
+
 def ensure_v1():
+    if not full_v1_ready() and cached_v1_inputs_ready():
+        print('V1: artifact đầu vào đã được xác minh; không resume báo cáo cũ thiếu completion.', flush=True)
+        return
     if not full_v1_ready():
         folder = ROOT / 'outputs/vcg_full_evaluation'
         arguments = [ROOT / 'scripts/run_full_vcg_evaluation.py', '--workers',
@@ -176,7 +228,7 @@ def ensure_v1():
 
 def ensure_features():
     path = ROOT / 'outputs/vcg_12_features_train_valid_test/completion.json'
-    if (not path.exists() or json.loads(path.read_text()).get('completed_records') != 448
+    if (not path.exists() or json.loads(path.read_text(encoding="utf-8")).get('completed_records') != 448
             or not all((path.parent / name).is_file() for name in
                        ['train_features.csv', 'valid_features.csv', 'test_features.csv', 'config.json', 'split_manifest.csv'])):
         execute(6)
@@ -203,7 +255,7 @@ def prepare_notebook(number):
             execute(7)
         experiment = ROOT / 'outputs/vcg_t_almeida_v2_experiment'
         summary = experiment / 'execution_summary.json'
-        if (not summary.is_file() or json.loads(summary.read_text()).get('attempted') != 448
+        if (not summary.is_file() or json.loads(summary.read_text(encoding="utf-8")).get('attempted') != 448
                 or not (experiment / 'gallery/manifest.csv').is_file()
                 or not (experiment / 'figures/patient104_s0306lre_loops.png').is_file()):
             run(ROOT / 'scripts/run_vcg_t_almeida_experiment.py')

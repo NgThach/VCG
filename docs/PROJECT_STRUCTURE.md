@@ -2,7 +2,7 @@
 
 ## Các phần đang dùng
 
-- **Notebook 01–09:** nội dung khảo sát, xử lý và trực quan của dự án.
+- **Notebook 01–11:** nội dung khảo sát, xử lý, trực quan và các thí nghiệm V3/V4.
 - **`data/features/v1/` và `data/features/v2/`:** các bảng VCG features hiện tại,
   mỗi bộ gồm train/valid/test. Đã có sẵn trong Git, không cần tải tín hiệu PTB.
 - **`examples/Read_VCG_Features.ipynb`:** chỉ đọc các bảng features và tạo X/y;
@@ -43,7 +43,7 @@ snapshot mới khi nguồn thay đổi, giữ nguyên snapshot cũ đã được
 
 ## Rà soát sau khi dọn
 
-Đã rà tĩnh import, lệnh gọi script trong cả 9 notebook và các danh sách file nguồn.
+Đã rà tĩnh import, lệnh gọi script trong các notebook lịch sử 01–09 và các danh sách file nguồn.
 Cả 23 file Python còn trong `scripts/` đều thuộc chuỗi phụ thuộc của notebook/runner.
 Không còn tham chiếu mã chạy tới 11 file đã xoá; các file nguồn yêu cầu lưu snapshot
 đều tồn tại và toàn bộ Python còn lại phân tích cú pháp được.

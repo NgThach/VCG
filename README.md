@@ -4,7 +4,7 @@ Dự án xử lý ba kênh Frank **X/Y/Z** của PTB, tạo nhịp đại diện
 tách QRS và T, trích xuất 12 đặc trưng và so sánh cách tìm biên T cũ (V1) với
 Wavelet/TLS (V2). Phạm vi MI/HC hiện có **448 bản ghi / 200 bệnh nhân**.
 
-Repo chứa mã nguồn, 9 notebook nghiên cứu, kiểm thử, danh sách chia tập theo bệnh nhân
+Repo chứa mã nguồn, 11 notebook nghiên cứu, kiểm thử, danh sách chia tập theo bệnh nhân
 và các bảng VCG features đã trích xuất. `git clone` tải cả mã nguồn và bảng features.
 Để chạy lại quá trình trích xuất hoặc vẽ loops, dataset gốc được đính kèm tại
 [GitHub Release data-v1](https://github.com/NgThach/VCG/releases/tag/data-v1);
@@ -22,7 +22,7 @@ Mở [notebook đọc features trên Colab](https://colab.research.google.com/gi
 V1 giữ 7 dòng thiếu feature; V2 giữ 136 dòng thiếu. File `vcg_12_features.csv`
 ở root là bảng legacy 446 dòng, không phải bảng V1 hiện tại.
 
-Các bước tải dữ liệu và chạy Notebook01–09 bên dưới dành cho việc trích xuất,
+Các bước tải dữ liệu và chạy Notebook01–11 bên dưới dành cho việc trích xuất,
 kiểm tra hoặc trực quan tín hiệu/loops.
 
 ## 1. Clone và cài đặt
@@ -73,8 +73,11 @@ Chọn **Run All**. Cell này tải dữ liệu nếu thiếu và tạo các đ�
 - **07:** tự chạy 06 nếu chưa có bảng features; tạo kiểm tra QC và mẫu review.
 - **08:** tự tạo đầu vào của 06–07 và kết quả Wavelet/TLS nếu thiếu; hiển thị đủ 448 ID.
 - **09:** tự tạo đầu vào V1 của 06; chạy và giải thích thí nghiệm Wavelet/TLS.
+- **10:** consensus V1/V2/C và giao thức so sánh không nhãn trên cùng cohort.
+- **11:** V4 theo đặc tả J-point → T-end; tự đọc raw, chạy đủ 448 record, khóa
+  train/valid trước test và xuất E0–E7, T1–T7, F1–F5.
 
-**Lần chạy đầu của 06–09 có thể kéo dài nhiều phút** vì tính trên toàn bộ cohort
+**Lần chạy đầu của 06–11 có thể kéo dài nhiều phút** vì tính trên toàn bộ cohort
 và tạo hàng trăm hình. Dòng tiến độ hiển thị bước đang chạy. Giữ nguyên code/cấu hình
 để tiếp tục dùng checkpoint sau khi ngắt; khi thay thuật toán, dùng thư mục kết quả mới.
 
@@ -89,10 +92,11 @@ Hoặc chạy không qua giao diện, dùng đúng Python đang kích hoạt và
 ```bash
 python scripts/execute_notebook.py 08_QRS_T_Loop_Reference_Error_Analysis.ipynb
 python scripts/execute_notebook.py 09_VCG_T_Loop_Almeida_Wavelet_TLS_Experiment.ipynb
+python scripts/execute_notebook.py 11_VCG_V4_J_Point_T_End.ipynb
 ```
 
 Kết quả là `executed_08_*.ipynb`, `executed_09_*.ipynb` ở root; log và thống kê
-ở `outputs/reproducibility/`. Chạy lần lượt **01 → 09** nếu muốn kiểm tra toàn bộ lịch sử.
+ở `outputs/reproducibility/`. Chạy lần lượt **01 → 11** nếu muốn kiểm tra toàn bộ lịch sử.
 Notebook02 ghi lại các CSV legacy ở root; nên chạy trước khi đóng băng kết quả 07–09.
 
 Notebook08 mục **14F** nhúng 75 trang hình bao phủ 448 ID, kể cả thiếu median/biên.

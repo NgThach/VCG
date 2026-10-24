@@ -99,7 +99,7 @@ def discover_records(data_root):
     manifest = data_root / 'RECORDS'
     listed = []
     if manifest.exists():
-        listed = [s.strip() for s in manifest.read_text().splitlines()
+        listed = [s.strip() for s in manifest.read_text(encoding="utf-8").splitlines()
                   if s.strip() and not s.startswith('#')]
         paths.update(listed)
     duplicate_manifest = sorted({s for s in listed if listed.count(s) > 1})
@@ -558,7 +558,7 @@ def write_tables(out, frame):
     for _, record in frame.iterrows():
         path = out/'artifacts'/(record.record_id.replace('/', '_')+'.json')
         if path.exists():
-            for beat in json.loads(path.read_text()).get('beat_qc', []):
+            for beat in json.loads(path.read_text(encoding="utf-8")).get('beat_qc', []):
                 beat_rows.append({**{key: record[key] for key in common}, **beat})
     pd.DataFrame(beat_rows).to_csv(out/'evaluation/beat_quality_results.csv', index=False)
     # Empty schema explicitly means no independent corresponding reference found.
@@ -593,7 +593,7 @@ def initialize_run(args, inventory, manifest, split_details):
     if args.resume:
         if not config_path.exists():
             raise ValueError('--resume requires config.json')
-        config = json.loads(config_path.read_text())
+        config = json.loads(config_path.read_text(encoding="utf-8"))
         if jsonable({k: config.get(k) for k in current}) != jsonable(current):
             raise ValueError('Resume blocked: V1 source/config/data inventory/split changed')
     else:
@@ -608,7 +608,7 @@ def initialize_run(args, inventory, manifest, split_details):
             'optimization': 'None; test used only for fixed-baseline descriptive evaluation.'}
         audit_path = REPO/'scripts/reference_audit.json'
         if audit_path.exists():
-            config['annotation_audit'] = json.loads(audit_path.read_text())
+            config['annotation_audit'] = json.loads(audit_path.read_text(encoding="utf-8"))
         write_json(config_path, config)
         for name in SOURCES:
             dest = out/'baseline_v1'/name
@@ -657,7 +657,7 @@ def main(argv=None):
     for metadata in jobs:
         checkpoint = out/'checkpoints'/(metadata['record_id'].replace('/', '_')+'.json')
         if args.resume and checkpoint.exists():
-            row = json.loads(checkpoint.read_text())
+            row = json.loads(checkpoint.read_text(encoding="utf-8"))
             if row['record_id'] != metadata['record_id']:
                 raise ValueError('Checkpoint identity mismatch')
             rows.append(row)

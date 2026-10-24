@@ -19,16 +19,16 @@ def build_gallery(results,out):
     for row in records:
         rid=row['record_id'];safe=rid.replace('/','_')
         median=load_median(ROOT/'outputs/vcg_full_evaluation/artifacts',rid)
-        diag=json.loads((out/'diagnostics'/(safe+'.json')).read_text())
+        diag=json.loads((out/'diagnostics'/(safe+'.json')).read_text(encoding="utf-8"))
         with np.load(out/'artifacts'/(safe+'.npz'),allow_pickle=False) as z:
             arrays={k:z[k].copy() for k in z.files}
         payload=json_safe(dict(row=row,xyz=median['xyz'],time_ms=median['time_ms'],
             diag={k:v for k,v in diag.items() if k not in ('filter_bank','identity')},arrays=arrays))
         raw=json.dumps(payload,ensure_ascii=False,allow_nan=False,separators=(',',':')).replace('<','\\u003c')
-        (gallery/'data'/(safe+'.js')).write_text('window.__almeidaPayloads['+json.dumps(rid)+']='+raw+';\n')
+        (gallery/'data'/(safe+'.js')).write_text('window.__almeidaPayloads['+json.dumps(rid)+']='+raw+';\n', encoding='utf-8')
     index=[{k:r.get(k) for k in ['record_id','patient_id','label_name','split','status','v1_qc_status','median_present','failure_reason',
                                       't_on_v1_ms','t_off_v1_ms','t_on_v2_ms','t_off_v2_ms']} for r in records]
-    (gallery/'index.html').write_text(HTML.replace('__INDEX_JSON__',json.dumps(json_safe(index),ensure_ascii=False).replace('<','\\u003c')))
+    (gallery/'index.html').write_text(HTML.replace('__INDEX_JSON__',json.dumps(json_safe(index),ensure_ascii=False).replace('<','\\u003c')), encoding='utf-8')
     manifest=pd.DataFrame(index);manifest['payload']=manifest.record_id.map(lambda s:'data/'+s.replace('/','_')+'.js')
     manifest.to_csv(gallery/'manifest.csv',index=False)
     validate_gallery(out,results)
@@ -43,7 +43,7 @@ def validate_gallery(out,results=None):
         raise ValueError('Gallery coverage differs from output cohort')
     for r in manifest.itertuples():
         payload=out/'gallery'/r.payload
-        text=payload.read_text()
+        text=payload.read_text(encoding="utf-8")
         if not text.startswith('window.__almeidaPayloads['+json.dumps(r.record_id)+']'):
             raise ValueError('Wrong gallery payload identity')
         obj=json.loads(text.split('=',1)[1].rstrip(';\n'))
@@ -62,7 +62,7 @@ def validate_gallery(out,results=None):
             elif 't_loop_v2' in obj['arrays']:raise ValueError('Loop exists without resolved final bounds')
     check=dict(records=len(manifest),payloads_verified=len(manifest),no_fake_missing_medians=True,
                all_loop_cuts_exact=True,time_grid_exact=True,offline_no_external_dependencies=True)
-    (out/'gallery/validation.json').write_text(json.dumps(check,indent=2))
+    (out/'gallery/validation.json').write_text(json.dumps(check,indent=2), encoding='utf-8')
     return check
 
 

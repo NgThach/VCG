@@ -18,7 +18,7 @@ from scipy.signal import freqz
 import vcg_t_almeida as v2
 from vcg_reference_metrics import load_median
 from run_vcg_t_almeida_experiment import (load_v1_inputs,process_one,verify_v1,initialize,
-                                         feature_values,ARTIFACT_INPUT,safe_id,run_experiment)
+                                         feature_values,ARTIFACT_INPUT,FEATURE_INPUT,safe_id,run_experiment,write_json)
 from vcg_preprocessing import Config as V1Config
 
 
@@ -251,7 +251,33 @@ class TestTLS(unittest.TestCase):
         self.assertEqual(r['stop_reason'],'no_significant_extremum_or_boundary')
 
 
-@unittest.skipUnless(ARTIFACT_INPUT.is_dir(),'PTB V1 artifacts unavailable')
+class TestNotebookIO(unittest.TestCase):
+    def test_json_writer_preserves_vietnamese_utf8(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path=Path(directory)/'diagnostic.json'
+            value={'note':'Đánh giá tín hiệu, biên sóng T'}
+            write_json(path,value)
+            self.assertEqual(json.loads(path.read_bytes().decode('utf-8')),value)
+
+    def test_missing_intermediates_render_without_inventing_wavelets(self):
+        from vcg_t_almeida_plots import plot_wavelets,plot_wt_loop
+        import matplotlib.pyplot as plt
+        xyz,fs,anchor,*_=synthetic()
+        case=dict(median=dict(xyz=xyz,fs=fs,anchor=anchor),
+                  row=dict(record_id='synthetic/missing_qrs',failure_reason='missing_qrs'),
+                  diag={},arrays={})
+        for render in (plot_wavelets,plot_wt_loop):
+            fig=render(case)
+            try:
+                fig.canvas.draw()
+                self.assertTrue(any('unavailable' in t.get_text() for ax in fig.axes for t in ax.texts))
+            finally:
+                plt.close(fig)
+
+
+@unittest.skipUnless(ARTIFACT_INPUT.is_dir() and all((FEATURE_INPUT/name).is_file() for name in
+    ('train_features.csv','valid_features.csv','test_features.csv','config.json','split_manifest.csv')),
+    'PTB integration requires V1 artifacts and generated feature outputs (Notebook 09 setup prepares them)')
 class TestFrozenPTBIntegration(unittest.TestCase):
     @classmethod
     def setUpClass(cls):cls.frame,cls.manifest,cls.v1cfg=load_v1_inputs()

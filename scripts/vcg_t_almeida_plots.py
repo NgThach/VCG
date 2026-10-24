@@ -24,7 +24,7 @@ def load_case(out,record_id):
     table=pd.read_csv(out/'v2_t_boundaries.csv')
     row=table.set_index('record_id').loc[record_id].to_dict();row['record_id']=record_id
     median=load_median(ROOT/'outputs/vcg_full_evaluation/artifacts',record_id)
-    diag=json.loads((out/'diagnostics'/(safe+'.json')).read_text())
+    diag=json.loads((out/'diagnostics'/(safe+'.json')).read_text(encoding="utf-8"))
     with np.load(out/'artifacts'/(safe+'.npz'),allow_pickle=False) as z:
         arrays={k:z[k].copy() for k in z.files}
     return dict(row=row,median=median,diag=diag,arrays=arrays)
@@ -78,7 +78,8 @@ def plot_median(case,comparison=False):
 
 
 def plot_wavelets(case):
-    if case['median']['xyz'] is None:return _missing(case,'Quadratic-spline wavelets')
+    if case['median']['xyz'] is None or not all('wavelet_scale'+str(s) in case['arrays'] for s in (3,4,5)):
+        return _missing(case,'Quadratic-spline wavelets')
     t=case['median']['time_ms'];d=case['diag'];arrays=case['arrays']
     fig,axs=_new(3,3,(16,10))
     window=d.get('search_window',[0,len(t)-1])
@@ -133,7 +134,8 @@ def _equal_3d(ax,points):
 
 
 def plot_wt_loop(case):
-    if case['median']['xyz'] is None:return _missing(case,'Wavelet Transform Loop')
+    if case['median']['xyz'] is None or 'wavelet_scale'+str(case['diag'].get('selected_scale',4)) not in case['arrays']:
+        return _missing(case,'Wavelet Transform Loop')
     fig=plt.figure(figsize=(10,8),layout='constrained');ax=fig.add_subplot(projection='3d')
     d=case['diag'];scale=d.get('selected_scale',4);w=case['arrays']['wavelet_scale'+str(scale)]
     a,b=d.get('search_window',[0,len(w)-1]);segment=w[a:b+1]

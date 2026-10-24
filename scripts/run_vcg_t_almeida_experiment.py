@@ -42,7 +42,7 @@ def write_json(path, value):
     path.parent.mkdir(parents=True, exist_ok=True)
     # Atomic replacement of this experiment's files only.
     tmp = path.with_suffix(path.suffix + ".tmp")
-    tmp.write_text(json.dumps(json_safe(value), ensure_ascii=False, allow_nan=False, indent=2)+"\n")
+    tmp.write_text(json.dumps(json_safe(value), ensure_ascii=False, allow_nan=False, indent=2)+"\n", encoding="utf-8")
     tmp.replace(path)
 
 
@@ -63,7 +63,7 @@ def load_v1_inputs(input_dir=FEATURE_INPUT):
             raise ValueError("V1 manifest mismatch: "+key)
     if frame.groupby("patient_id").split.nunique().gt(1).any():
         raise ValueError("Patient leakage in V1 manifest")
-    source_cfg = json.loads((input_dir/"config.json").read_text())
+    source_cfg = json.loads((input_dir/"config.json").read_text(encoding="utf-8"))
     for name, digest in source_cfg["source_sha256"].items():
         if sha(ROOT/name) != digest:
             raise ValueError("V1 source differs from frozen run: "+name)
@@ -84,7 +84,7 @@ def protected_files():
 def freeze_v1(out):
     path = Path(out)/"protected_v1_hashes.json"
     if path.exists():
-        hashes = json.loads(path.read_text())
+        hashes = json.loads(path.read_text(encoding="utf-8"))
         verify_v1(hashes)
     else:
         hashes = {str(p.relative_to(ROOT)): sha(p) for p in protected_files()}
@@ -121,7 +121,7 @@ def initialize(out=DEFAULT_OUT, cfg=AlmeidaConfig()):
     engine_hash = sha(ROOT/"vcg_t_almeida.py")
     fingerprint = hashlib.sha256((engine_hash+config_id(cfg)+sha(FEATURE_INPUT/"split_manifest.csv")).encode()).hexdigest()
     existing = out/"config.json"
-    if existing.exists() and json.loads(existing.read_text()).get("algorithm_fingerprint") != fingerprint:
+    if existing.exists() and json.loads(existing.read_text(encoding="utf-8")).get("algorithm_fingerprint") != fingerprint:
         raise ValueError("Frozen algorithm/config differs; use a separate output directory")
     config = dict(method=METHOD_VERSION, method_class=METHOD_CLASS, config=asdict(cfg),
         config_id=config_id(cfg), algorithm_fingerprint=fingerprint,
@@ -198,11 +198,11 @@ def process_one(row, out, cfg, v1cfg, fingerprint, resume=True):
     diag_path = out/"diagnostics"/(safe+".json")
     array_path = out/"artifacts"/(safe+".npz")
     if resume and checkpoint.exists():
-        prior = json.loads(checkpoint.read_text())
+        prior = json.loads(checkpoint.read_text(encoding="utf-8"))
         if prior.get("identity") != identity:
             raise ValueError("Checkpoint identity mismatch: "+rid)
         if diag_path.is_file() and array_path.is_file() and sha(diag_path)==prior.get("diagnostics_sha256") and sha(array_path)==prior.get("arrays_sha256"):
-            return prior["result"],json.loads(diag_path.read_text()),True
+            return prior["result"],json.loads(diag_path.read_text(encoding="utf-8")),True
     error, trace = "", ""
     try:
         if median["xyz"] is None:
@@ -485,13 +485,13 @@ def write_report(out,summary,results,features):
     lines += ['', '## Kiểm thử và giao diện','']
     for name in ('test_results.json','notebook_execution.json'):
         p=out/'reports'/name
-        if p.exists():lines.append(f"- `{name}`: "+json.dumps(json.loads(p.read_text()),ensure_ascii=False)+'.')
+        if p.exists():lines.append(f"- `{name}`: "+json.dumps(json.loads(p.read_text(encoding="utf-8")),ensure_ascii=False)+'.')
     p=out/'gallery/browser_validation.json'
     if p.exists():
-        browser=json.loads(p.read_text())
+        browser=json.loads(p.read_text(encoding="utf-8"))
         lines.append(f"- Real headless Chrome mở {browser['records']} payloads, thử {browser['representative_tab_views']} lượt tab đại diện; JS exceptions={len(browser['javascript_exceptions'])}. Ảnh initial/TLS/loops đã được lưu; đây không phải chuyên gia review từng recording.")
     lines += ['', 'Gallery offline: [mở toàn cohort](../gallery/index.html). Test log: `../logs/test_run.log`.','']
-    (out/'reports/experiment_report.md').write_text('\n'.join(lines))
+    (out/'reports/experiment_report.md').write_text('\n'.join(lines), encoding='utf-8')
 
 
 def run_experiment(out=DEFAULT_OUT,record_ids=None,resume=True,plots=True,gallery=True,reference_csv=None):

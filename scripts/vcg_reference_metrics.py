@@ -78,7 +78,7 @@ def load_median(artifact_root, record_id):
     jp, npz = root / (safe + '.json'), root / (safe + '.npz')
     if not jp.is_file() or not npz.is_file():
         raise FileNotFoundError(f'Missing V1 artifact: {record_id}')
-    artifact = json.loads(jp.read_text())
+    artifact = json.loads(jp.read_text(encoding="utf-8"))
     if artifact.get('record_id') != record_id:
         raise ValueError('Artifact record_id mismatch')
     if artifact.get('time_reference') != 'median_relative_ms':
